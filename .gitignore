@@ -1,5 +1,7 @@
 # Dependencies
 workers/node_modules/
+workers/.tmp-seed-admins.sql
+workers/admins.seed.json
 
 # Cloudflare Wrangler local
 workers/.wrangler/

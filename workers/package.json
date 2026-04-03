@@ -9,7 +9,10 @@
     "probe": "node health-probe.mjs",
     "set-d1": "node set-d1-id.mjs",
     "db:migrate:local": "wrangler d1 execute my --local --file=./schema.sql --config ../wrangler.toml",
-    "db:migrate:remote": "wrangler d1 execute my --remote --file=./schema.sql --config ../wrangler.toml"
+    "db:migrate:remote": "wrangler d1 execute my --remote --file=./schema.sql --config ../wrangler.toml",
+    "copy-admin-from-old": "node copy-admin-from-old-d1.mjs",
+    "export-admins": "node export-admins-from-d1.mjs",
+    "import-admins": "node import-admins-from-file.mjs"
   },
   "devDependencies": {
     "wrangler": "latest"

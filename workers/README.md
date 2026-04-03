@@ -4,7 +4,7 @@
 
 仓库**根目录**的 `wrangler.toml` 里的 `name` 决定默认部署后的子域：`{name}.{账户子域}.workers.dev`。
 
-若你在浏览器里用的是 `https://testbackend.xxx.workers.dev`，则 `name` 必须是 `testbackend`，并在该 Worker 上部署本仓库代码；否则会一直出现 **404 空响应**（请求打到了没有 API 的另一个 Worker）。
+若你在浏览器里用的是 `https://firedragon.xxx.workers.dev`，则仓库根 `wrangler.toml` 的 `name` 必须是 `firedragon`（与控制台 Worker 名一致），并在该 Worker 上部署本仓库代码；否则会一直出现 **404 空响应**（请求打到了没有 API 的另一个 Worker）。
 
 部署（配置在仓库根 `wrangler.toml`，脚本在 `workers/`）：
 
@@ -22,7 +22,7 @@ npm run deploy
 - `https://你的子域.workers.dev/admin.html` 或 `/admin`（会 302 到 `admin.html`）为后台页面；
 - 同一域名下的 `/api/*` 由 Worker 脚本处理。
 
-若仍出现 **`POST /api/...` 404**：说明线上 `testbackend` 尚未成功部署过当前 Worker，或 Git 构建未读到仓库根的 `wrangler.toml`（勿把 Cloudflare 的 Root directory 设成仅 `workers` 却又删掉根配置——本仓库以**仓库根**的 `wrangler.toml` 为准）。
+若仍出现 **`POST /api/...` 404**：说明线上 Worker（如 `firedragon`）尚未成功部署过当前代码，或 Git 构建未读到仓库根的 `wrangler.toml`（勿把 Cloudflare 的 Root directory 设成仅 `workers` 却又删掉根配置——本仓库以**仓库根**的 `wrangler.toml` 为准）。
 
 ## 1) 安装
 
@@ -48,6 +48,36 @@ npm run db:migrate:remote
 ```
 
 （等价于 `npx wrangler d1 execute my --remote --file=./schema.sql --config ../wrangler.toml`。仅本地调试可用 `npm run db:migrate:local`。）
+
+## 3b) 从旧 D1 复制管理员到新 D1（换 database_id 后）
+
+### 情况 A：旧库、新库在**同一个** Cloudflare 账号
+
+新库已在仓库根 `wrangler.toml` 里配好 `database_id`，旧库 UUID 写在 `workers/wrangler-old-d1.toml`（默认示例为 `9361d626-...`，请按实际修改）：
+
+```bash
+npm run copy-admin-from-old
+```
+
+### 情况 B：旧库在**账号甲**、新库在**账号乙**（Wrangler 不能跨账号直连）
+
+1. **登录旧账号**：`npx wrangler login`（选甲账号）  
+2. 确认 `workers/wrangler-old-d1.toml` 里 `database_id` 是**旧库**在甲账号下的 UUID。  
+3. 导出到本地文件（**勿提交 Git**，已在 `.gitignore`）：
+
+```bash
+npm run export-admins
+```
+
+4. **退出并登录新账号**：`npx wrangler logout` → `npx wrangler login`（选乙账号）  
+5. 确认仓库根 `wrangler.toml` 里 `database_id` 是**新库**在乙账号下的 UUID。  
+6. 导入：
+
+```bash
+npm run import-admins
+```
+
+完成后可用**原来的用户名和密码**登录后台；导入成功后可删除本机 `workers/admins.seed.json`。
 
 ## 4) 初始化管理员账号（示例）
 

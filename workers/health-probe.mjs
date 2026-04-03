@@ -10,7 +10,7 @@ import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, "..");
-const DEFAULT_BASE = "https://testbackend.milcefarmer-19f.workers.dev";
+const DEFAULT_BASE = "https://firedragon.firedragon1949web.workers.dev";
 const BASE = (process.env.MEMBER_PROBE_BASE || DEFAULT_BASE).replace(/\/$/, "");
 
 /** Windows 上紧跟 fetch 的 process.exit 偶发触发 libuv 断言，延后到下一事件循环再退出。 */

@@ -1,0 +1,9 @@
+# 仅用于 copy-admin-from-old-d1.mjs 从旧库读取 admins，勿用于部署。
+name = "temp-d1-pull"
+main = "src/index.js"
+compatibility_date = "2026-04-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "my"
+database_id = "9361d626-8314-4df2-a8ee-04c73dc54c6c"

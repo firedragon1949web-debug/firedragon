@@ -1,9 +1,15 @@
 # 本文件放在「Git 仓库根目录」，Cloudflare 从 Git 构建时默认根目录即可读到，无需再单独设成 workers/。
 # 路径均相对于本文件所在目录。
 # 须与 Cloudflare 控制台里该 Worker 的名称一致，否则子域会是别的名字。
-name = "testbackend"
+# 与 *.workers.dev 子域前缀一致，例如 name=firedragon → firedragon.<账户>.workers.dev
+name = "firedragon"
 main = "workers/src/index.js"
 compatibility_date = "2026-04-01"
+
+# 与控制台「自定义域」一致，部署后保持路由同步（zone 须为 Cloudflare 托管的 firedragon1949.org.hk）
+routes = [
+  { pattern = "members.firedragon1949.org.hk/*", zone_name = "firedragon1949.org.hk" }
+]
 
 [assets]
 directory = "workers/public"
@@ -12,11 +18,12 @@ directory = "workers/public"
 binding = "DB"
 # 须与 Cloudflare 控制台里该 D1 的名称一致。
 database_name = "my"
-database_id = "9361d626-8314-4df2-a8ee-04c73dc54c6c"
+database_id = "c9775b90-d2d1-43a1-91c9-4c965e3ad996"
 
 [vars]
 # 逗号分隔多个前端域名。同一 Worker 子域名（*.workers.dev）已在代码里自动放行，可不写。
-ALLOWED_ORIGINS = "https://www.firedragon.org.hk"
+# Pages 官网与会员子域（按实际访问的 https:// 完整 origin 填写，逗号分隔）
+ALLOWED_ORIGINS = "https://www.firedragon.org.hk,https://www.firedragon1949.org.hk,https://firedragon1949.org.hk,https://members.firedragon1949.org.hk"
 SESSION_DAYS = "7"
 # 可选：公开登记条数软上限。未设置、空字符串或 "0" 表示不启用；正整数则 COUNT(*) 达到该值后 POST 返回 507。
 MAX_REGISTRATIONS = "0"
