@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>API 测试页面</title>
+  <style>
+    body { font-family: Arial; padding: 20px; max-width: 800px; margin: 0 auto; }
+    button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    pre { background: #f4f4f4; padding: 15px; overflow-x: auto; }
+    .success { color: green; }
+    .error { color: red; }
+  </style>
+</head>
+<body>
+  <h1>后端 API 测试</h1>
+
+  <h2>1. 管理员登录</h2>
+  <button onclick="adminLogin()">登录 (admin / admin123)</button>
+
+  <h2>2. 查看登记列表</h2>
+  <button onclick="getRegistrations()" id="btnList" disabled>查看列表</button>
+
+  <h2>3. 测试新增登记</h2>
+  <button onclick="testRegister()">测试登记</button>
+
+  <h2>结果：</h2>
+  <pre id="result">点击上方按钮开始测试...</pre>
+
+  <script>
+    async function adminLogin() {
+      try {
+        const res = await fetch('http://127.0.0.1:8787/api/admin/login', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          credentials: 'include',
+          body: JSON.stringify({username: 'admin', password: 'admin123'})
+        });
+        const data = await res.json();
+        document.getElementById('result').innerHTML = JSON.stringify(data, null, 2);
+        if (data.ok) {
+          document.getElementById('btnList').disabled = false;
+          document.getElementById('result').className = 'success';
+        } else {
+          document.getElementById('result').className = 'error';
+        }
+      } catch (e) {
+        document.getElementById('result').innerHTML = '错误: ' + e.message;
+        document.getElementById('result').className = 'error';
+      }
+    }
+
+    async function getRegistrations() {
+      try {
+        const res = await fetch('http://127.0.0.1:8787/api/admin/registrations', {
+          method: 'GET',
+          credentials: 'include'
+        });
+        const data = await res.json();
+        document.getElementById('result').innerHTML = JSON.stringify(data, null, 2);
+      } catch (e) {
+        document.getElementById('result').innerHTML = '错误: ' + e.message;
+      }
+    }
+
+    async function testRegister() {
+      try {
+        const res = await fetch('http://127.0.0.1:8787/api/registrations', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            name: '测试用户',
+            email: 'test@example.com',
+            country_region: 'Hong Kong',
+            phone_country_code: '+852',
+            phone_number: '12345678'
+          })
+        });
+        const data = await res.json();
+        document.getElementById('result').innerHTML = JSON.stringify(data, null, 2);
+      } catch (e) {
+        document.getElementById('result').innerHTML = '错误: ' + e.message;
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>会员登记</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #f7f7f7; color: #222; }
+    .wrap { max-width: 1100px; margin: 32px auto; padding: 0 16px; }
+    .topbar { display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .topbar .lang-group { display: flex; gap: 4px; }
+    .lang-btn {
+      padding: 6px 12px; border-radius: 8px; border: 1px solid #ccc; background: #fff;
+      font-size: 13px; cursor: pointer; color: #333;
+    }
+    .lang-btn.active { background: #e63278; color: #fff; border-color: #e63278; font-weight: 700; }
+    .panel { display: grid; grid-template-columns: 1fr 1.2fr; gap: 24px; background: #fff; border: 1px solid #e5e5e5; border-radius: 12px; padding: 24px; }
+    .card { border: 1px solid #eee; border-radius: 10px; padding: 16px; }
+    h1 { margin: 0 0 12px; font-size: 28px; flex: 1; }
+    .title-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    h2 { margin: 0 0 12px; font-size: 20px; }
+    .qr { width: 280px; max-width: 100%; border: 1px solid #ddd; border-radius: 8px; padding: 8px; background: #fff; }
+    .line { margin: 10px 0; font-size: 14px; word-break: break-all; }
+    label { display: block; font-weight: 700; margin: 12px 0 6px; }
+    input, select { width: 100%; box-sizing: border-box; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 14px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    button[type="submit"] { margin-top: 14px; width: 100%; padding: 12px; border: 0; border-radius: 8px; background: #e63278; color: #fff; font-weight: 700; cursor: pointer; }
+    .msg { margin-top: 10px; min-height: 20px; font-size: 14px; }
+    .msg.ok { color: #0f7a34; }
+    .msg.err { color: #b42318; }
+    @media (max-width: 860px) { .panel { grid-template-columns: 1fr; } }
+  </style>
+  <script>
+    window.MEMBER_API_BASE = window.location.origin;
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <div class="title-row">
+      <h1 id="pageHeading">会员登记</h1>
+      <div class="topbar">
+        <div class="lang-group">
+          <button type="button" class="lang-btn" id="langZh" aria-pressed="true">中文</button>
+          <button type="button" class="lang-btn" id="langEn" aria-pressed="false">English</button>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="card">
+        <h2 id="scanTitle">扫码登记</h2>
+        <p id="scanHint">请客户使用手机扫描二维码进入登记页。</p>
+        <img id="qrCodeImage" class="qr" src="" alt="" />
+        <div class="line"><span id="linkLabel">链接：</span><a id="pageLink" href="#">-</a></div>
+      </div>
+      <div class="card">
+        <h2 id="formTitle">登记资料</h2>
+        <form id="registerForm">
+          <label for="name" id="labelName">姓名</label>
+          <input id="name" name="name" type="text" maxlength="80" required />
+
+          <label for="email" id="labelEmail">邮箱</label>
+          <input id="email" name="email" type="email" maxlength="120" required />
+
+          <label for="countryRegion" id="labelCountry">国家/地区</label>
+          <select id="countryRegion" name="country_region" required></select>
+
+          <label id="labelPhone">电话</label>
+          <div class="row">
+            <select id="phoneCountryCode" name="phone_country_code" required></select>
+            <input id="phoneNumber" name="phone_number" type="tel" maxlength="30" required />
+          </div>
+
+          <label for="vipNumber" id="labelVip">VIP号码（可选）</label>
+          <input id="vipNumber" name="vip_number" type="text" maxlength="50" />
+
+          <button type="submit" id="submitBtn">提交登记</button>
+          <div id="formMsg" class="msg" aria-live="polite"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var STORAGE_KEY = "firedragon_ui_lang";
+      var API_BASE = window.MEMBER_API_BASE || "";
+
+      var COUNTRY_OPTIONS = [
+        { v: "中国内地", zh: "中国内地", en: "Mainland China" },
+        { v: "中国香港", zh: "中国香港", en: "Hong Kong, China" },
+        { v: "中国澳门", zh: "中国澳门", en: "Macao, China" },
+        { v: "中国台湾", zh: "中国台湾", en: "Taiwan, China" },
+        { v: "新加坡", zh: "新加坡", en: "Singapore" },
+        { v: "马来西亚", zh: "马来西亚", en: "Malaysia" },
+        { v: "美国", zh: "美国", en: "United States" },
+        { v: "英国", zh: "英国", en: "United Kingdom" },
+        { v: "其他", zh: "其他", en: "Other" }
+      ];
+
+      var PHONE_CODES = ["+86", "+852", "+853", "+886", "+65", "+60", "+1", "+44"];
+
+      var STR = {
+        zh: {
+          pageTitle: "会员登记",
+          pageHeading: "会员登记",
+          scanTitle: "扫码登记",
+          scanHint: "请客户使用手机扫描二维码进入登记页。",
+          qrAlt: "登记二维码",
+          linkLabel: "链接：",
+          formTitle: "登记资料",
+          labelName: "姓名",
+          labelEmail: "邮箱",
+          labelCountry: "国家/地区",
+          labelPhone: "电话",
+          labelVip: "VIP号码（可选）",
+          submitBtn: "提交登记",
+          countryPlaceholder: "请选择",
+          phoneCodePlaceholder: "区号",
+          phonePlaceholder: "电话号码",
+          msgRequired: "请填写完整必填信息。",
+          msgEmailInvalid: "邮箱格式不正确。",
+          msgSuccess: "提交成功，感谢登记。",
+          msgSubmitFail: "提交失败，请稍后再试。",
+          msgHttpFail: "提交失败（HTTP {status}）。后端可能未部署或接口地址未接通。",
+          errDupEmail: "该邮箱已登记过",
+          errCapacity: "数据库容量不足，请稍后再试或联系管理员"
+        },
+        en: {
+          pageTitle: "Member registration",
+          pageHeading: "Member registration",
+          scanTitle: "Scan to register",
+          scanHint: "Ask guests to scan the QR code with a phone to open this page.",
+          qrAlt: "Registration QR code",
+          linkLabel: "Link: ",
+          formTitle: "Your details",
+          labelName: "Full name",
+          labelEmail: "Email",
+          labelCountry: "Country / region",
+          labelPhone: "Phone",
+          labelVip: "VIP number (optional)",
+          submitBtn: "Submit",
+          countryPlaceholder: "Please select",
+          phoneCodePlaceholder: "Code",
+          phonePlaceholder: "Phone number",
+          msgRequired: "Please fill in all required fields.",
+          msgEmailInvalid: "Invalid email format.",
+          msgSuccess: "Submitted successfully. Thank you.",
+          msgSubmitFail: "Submission failed. Please try again later.",
+          msgHttpFail: "Submission failed (HTTP {status}). The API may be unreachable.",
+          errDupEmail: "This email is already registered.",
+          errCapacity: "Database capacity exceeded. Please try again later or contact the administrator."
+        }
+      };
+
+      var SERVER_ERR_ZH_TO_EN = {
+        "该邮箱已登记过": "This email is already registered.",
+        "数据库容量不足，请稍后再试或联系管理员": "Database capacity exceeded. Please try again later or contact the administrator.",
+        "缺少字段: name": "Missing field: name",
+        "缺少字段: email": "Missing field: email",
+        "缺少字段: country_region": "Missing field: country/region",
+        "缺少字段: phone_country_code": "Missing field: phone country code",
+        "缺少字段: phone_number": "Missing field: phone number",
+        "邮箱格式不正确": "Invalid email format."
+      };
+
+      function detectLang() {
+        var s = localStorage.getItem(STORAGE_KEY);
+        if (s === "zh" || s === "en") return s;
+        var nav = (navigator.language || "").toLowerCase();
+        return nav.indexOf("zh") === 0 ? "zh" : "en";
+      }
+
+      var lang = detectLang();
+
+      function t(key) {
+        return STR[lang][key] || STR.zh[key] || key;
+      }
+
+      function mapServerMessage(msg) {
+        if (!msg || lang === "zh") return msg;
+        var m = String(msg);
+        return SERVER_ERR_ZH_TO_EN[m] || m;
+      }
+
+      function setLang(next) {
+        lang = next === "en" ? "en" : "zh";
+        localStorage.setItem(STORAGE_KEY, lang);
+        applyI18n();
+        document.getElementById("langZh").classList.toggle("active", lang === "zh");
+        document.getElementById("langEn").classList.toggle("active", lang === "en");
+        document.getElementById("langZh").setAttribute("aria-pressed", lang === "zh" ? "true" : "false");
+        document.getElementById("langEn").setAttribute("aria-pressed", lang === "en" ? "true" : "false");
+      }
+
+      function fillCountrySelect() {
+        var sel = document.getElementById("countryRegion");
+        var prev = sel.value;
+        sel.innerHTML = "";
+        var opt0 = document.createElement("option");
+        opt0.value = "";
+        opt0.textContent = t("countryPlaceholder");
+        sel.appendChild(opt0);
+        for (var i = 0; i < COUNTRY_OPTIONS.length; i++) {
+          var o = COUNTRY_OPTIONS[i];
+          var opt = document.createElement("option");
+          opt.value = o.v;
+          opt.textContent = lang === "en" ? o.en : o.zh;
+          sel.appendChild(opt);
+        }
+        if (prev) sel.value = prev;
+      }
+
+      function fillPhoneCodeSelect() {
+        var sel = document.getElementById("phoneCountryCode");
+        var prev = sel.value;
+        sel.innerHTML = "";
+        var opt0 = document.createElement("option");
+        opt0.value = "";
+        opt0.textContent = t("phoneCodePlaceholder");
+        sel.appendChild(opt0);
+        for (var j = 0; j < PHONE_CODES.length; j++) {
+          var opt = document.createElement("option");
+          opt.value = PHONE_CODES[j];
+          opt.textContent = PHONE_CODES[j];
+          sel.appendChild(opt);
+        }
+        if (prev) sel.value = prev;
+      }
+
+      function applyI18n() {
+        document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+        document.title = t("pageTitle");
+        document.getElementById("pageHeading").textContent = t("pageHeading");
+        document.getElementById("scanTitle").textContent = t("scanTitle");
+        document.getElementById("scanHint").textContent = t("scanHint");
+        document.getElementById("qrCodeImage").setAttribute("alt", t("qrAlt"));
+        document.getElementById("linkLabel").textContent = t("linkLabel");
+        document.getElementById("formTitle").textContent = t("formTitle");
+        document.getElementById("labelName").textContent = t("labelName");
+        document.getElementById("labelEmail").textContent = t("labelEmail");
+        document.getElementById("labelCountry").textContent = t("labelCountry");
+        document.getElementById("labelPhone").textContent = t("labelPhone");
+        document.getElementById("labelVip").textContent = t("labelVip");
+        document.getElementById("submitBtn").textContent = t("submitBtn");
+        document.getElementById("phoneNumber").placeholder = t("phonePlaceholder");
+        fillCountrySelect();
+        fillPhoneCodeSelect();
+      }
+
+      document.getElementById("langZh").addEventListener("click", function () { setLang("zh"); });
+      document.getElementById("langEn").addEventListener("click", function () { setLang("en"); });
+
+      var pageUrl = window.location.origin + window.location.pathname;
+      var qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=" + encodeURIComponent(pageUrl);
+      var qrCodeImage = document.getElementById("qrCodeImage");
+      var pageLink = document.getElementById("pageLink");
+      qrCodeImage.src = qrUrl;
+      pageLink.href = pageUrl;
+      pageLink.textContent = pageUrl;
+
+      var form = document.getElementById("registerForm");
+      var formMsg = document.getElementById("formMsg");
+
+      function setMsg(text, ok) {
+        formMsg.textContent = text;
+        formMsg.className = "msg " + (ok ? "ok" : "err");
+      }
+
+      setLang(lang);
+
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        var normalizedEmail = document.getElementById("email").value
+          .trim()
+          .replace(/＠/g, "@")
+          .replace(/。/g, ".")
+          .replace(/\s+/g, "");
+
+        var payload = {
+          name: document.getElementById("name").value.trim(),
+          email: normalizedEmail,
+          country_region: document.getElementById("countryRegion").value,
+          phone_country_code: document.getElementById("phoneCountryCode").value,
+          phone_number: document.getElementById("phoneNumber").value.trim(),
+          vip_number: document.getElementById("vipNumber").value.trim() || null
+        };
+
+        if (!payload.name || !payload.email || !payload.country_region || !payload.phone_country_code || !payload.phone_number) {
+          setMsg(t("msgRequired"), false);
+          return;
+        }
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(payload.email)) {
+          setMsg(t("msgEmailInvalid"), false);
+          return;
+        }
+
+        try {
+          var endpoint = (API_BASE ? API_BASE.replace(/\/$/, "") : "") + "/api/registrations";
+          var resp = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+
+          var raw = "";
+          var data = null;
+          try {
+            raw = await resp.text();
+            data = raw ? JSON.parse(raw) : null;
+          } catch (parseErr) {
+            data = null;
+          }
+
+          if (!resp.ok) {
+            var backendMsg = data && data.error ? String(data.error) : "";
+            if (!backendMsg) {
+              if (resp.status === 409) backendMsg = t("errDupEmail");
+              else if (resp.status === 507) backendMsg = t("errCapacity");
+            } else {
+              backendMsg = mapServerMessage(backendMsg);
+            }
+            throw new Error(
+              backendMsg || t("msgHttpFail").replace("{status}", String(resp.status))
+            );
+          }
+
+          setMsg(t("msgSuccess"), true);
+          form.reset();
+        } catch (err) {
+          setMsg(err.message || t("msgSubmitFail"), false);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

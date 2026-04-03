@@ -1,0 +1,17 @@
+{
+  "name": "firedragon-members-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --config ../wrangler.toml",
+    "deploy": "node check-wrangler.mjs && wrangler deploy --config ../wrangler.toml",
+    "probe": "node health-probe.mjs",
+    "set-d1": "node set-d1-id.mjs",
+    "db:migrate:local": "wrangler d1 execute my --local --file=./schema.sql --config ../wrangler.toml",
+    "db:migrate:remote": "wrangler d1 execute my --remote --file=./schema.sql --config ../wrangler.toml"
+  },
+  "devDependencies": {
+    "wrangler": "latest"
+  }
+}
