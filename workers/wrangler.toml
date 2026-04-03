@@ -1,4 +1,5 @@
-name = "firedragon-members-api"
+# 须与 Cloudflare 控制台里该 Worker 的名称一致，否则子域会是别的名字（例如 firedragon-members-api.xxx.workers.dev）
+name = "testbackend"
 main = "src/index.js"
 compatibility_date = "2026-04-01"
 
@@ -8,5 +9,6 @@ database_name = "firedragon_members"
 database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
 
 [vars]
-ALLOWED_ORIGIN = "https://www.firedragon.org.hk"
+# 逗号分隔多个前端域名。同一 Worker 子域名（*.workers.dev）已在代码里自动放行，可不写。
+ALLOWED_ORIGINS = "https://www.firedragon.org.hk"
 SESSION_DAYS = "7"
