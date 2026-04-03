@@ -1,0 +1,20 @@
+# 本文件放在「Git 仓库根目录」，Cloudflare 从 Git 构建时默认根目录即可读到，无需再单独设成 workers/。
+# 路径均相对于本文件所在目录。
+# 须与 Cloudflare 控制台里该 Worker 的名称一致，否则子域会是别的名字。
+name = "testbackend"
+main = "workers/src/index.js"
+compatibility_date = "2026-04-01"
+
+[assets]
+directory = "workers/public"
+
+[[d1_databases]]
+binding = "DB"
+# 须与 Cloudflare 控制台里该 D1 的名称一致。
+database_name = "my"
+database_id = "9361d626-8314-4df2-a8ee-04c73dc54c6c"
+
+[vars]
+# 逗号分隔多个前端域名。同一 Worker 子域名（*.workers.dev）已在代码里自动放行，可不写。
+ALLOWED_ORIGINS = "https://www.firedragon.org.hk"
+SESSION_DAYS = "7"

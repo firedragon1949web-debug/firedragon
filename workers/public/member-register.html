@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>会员登记</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #f7f7f7; color: #222; }
+    .wrap { max-width: 1100px; margin: 32px auto; padding: 0 16px; }
+    .panel { display: grid; grid-template-columns: 1fr 1.2fr; gap: 24px; background: #fff; border: 1px solid #e5e5e5; border-radius: 12px; padding: 24px; }
+    .card { border: 1px solid #eee; border-radius: 10px; padding: 16px; }
+    h1 { margin: 0 0 12px; font-size: 28px; }
+    h2 { margin: 0 0 12px; font-size: 20px; }
+    .qr { width: 280px; max-width: 100%; border: 1px solid #ddd; border-radius: 8px; padding: 8px; background: #fff; }
+    .line { margin: 10px 0; font-size: 14px; word-break: break-all; }
+    label { display: block; font-weight: 700; margin: 12px 0 6px; }
+    input, select { width: 100%; box-sizing: border-box; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 14px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    button { margin-top: 14px; width: 100%; padding: 12px; border: 0; border-radius: 8px; background: #e63278; color: #fff; font-weight: 700; cursor: pointer; }
+    .msg { margin-top: 10px; min-height: 20px; font-size: 14px; }
+    .msg.ok { color: #0f7a34; }
+    .msg.err { color: #b42318; }
+    @media (max-width: 860px) { .panel { grid-template-columns: 1fr; } }
+  </style>
+  <script>
+    window.MEMBER_API_BASE = window.location.origin;
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <h1>会员登记</h1>
+    <div class="panel">
+      <div class="card">
+        <h2>扫码登记</h2>
+        <p>请客户使用手机扫描二维码进入登记页。</p>
+        <img id="qrCodeImage" class="qr" src="" alt="登记二维码" />
+        <div class="line">链接：<a id="pageLink" href="#">-</a></div>
+      </div>
+      <div class="card">
+        <h2>登记资料</h2>
+        <form id="registerForm">
+          <label for="name">姓名</label>
+          <input id="name" name="name" type="text" maxlength="80" required />
+
+          <label for="email">邮箱</label>
+          <input id="email" name="email" type="email" maxlength="120" required />
+
+          <label for="countryRegion">国家/地区</label>
+          <select id="countryRegion" name="country_region" required>
+            <option value="">请选择</option>
+            <option value="中国内地">中国内地</option>
+            <option value="中国香港">中国香港</option>
+            <option value="中国澳门">中国澳门</option>
+            <option value="中国台湾">中国台湾</option>
+            <option value="新加坡">新加坡</option>
+            <option value="马来西亚">马来西亚</option>
+            <option value="美国">美国</option>
+            <option value="英国">英国</option>
+            <option value="其他">其他</option>
+          </select>
+
+          <label>电话</label>
+          <div class="row">
+            <select id="phoneCountryCode" name="phone_country_code" required>
+              <option value="">区号</option>
+              <option value="+86">+86</option>
+              <option value="+852">+852</option>
+              <option value="+853">+853</option>
+              <option value="+886">+886</option>
+              <option value="+65">+65</option>
+              <option value="+60">+60</option>
+              <option value="+1">+1</option>
+              <option value="+44">+44</option>
+            </select>
+            <input id="phoneNumber" name="phone_number" type="tel" maxlength="30" placeholder="电话号码" required />
+          </div>
+
+          <label for="vipNumber">VIP号码（可选）</label>
+          <input id="vipNumber" name="vip_number" type="text" maxlength="50" />
+
+          <button type="submit">提交登记</button>
+          <div id="formMsg" class="msg" aria-live="polite"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // 部署时可改成你的 Worker 地址，例如：
+      // var API_BASE = "https://firedragon-members-api.your-subdomain.workers.dev";
+      var API_BASE = window.MEMBER_API_BASE || "";
+
+      var pageUrl = window.location.origin + window.location.pathname;
+      var qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=" + encodeURIComponent(pageUrl);
+      var qrCodeImage = document.getElementById("qrCodeImage");
+      var pageLink = document.getElementById("pageLink");
+      qrCodeImage.src = qrUrl;
+      pageLink.href = pageUrl;
+      pageLink.textContent = pageUrl;
+
+      var form = document.getElementById("registerForm");
+      var formMsg = document.getElementById("formMsg");
+
+      function setMsg(text, ok) {
+        formMsg.textContent = text;
+        formMsg.className = "msg " + (ok ? "ok" : "err");
+      }
+
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        var normalizedEmail = document.getElementById("email").value
+          .trim()
+          .replace(/＠/g, "@")
+          .replace(/。/g, ".")
+          .replace(/\s+/g, "");
+
+        var payload = {
+          name: document.getElementById("name").value.trim(),
+          email: normalizedEmail,
+          country_region: document.getElementById("countryRegion").value,
+          phone_country_code: document.getElementById("phoneCountryCode").value,
+          phone_number: document.getElementById("phoneNumber").value.trim(),
+          vip_number: document.getElementById("vipNumber").value.trim() || null
+        };
+
+        if (!payload.name || !payload.email || !payload.country_region || !payload.phone_country_code || !payload.phone_number) {
+          setMsg("请填写完整必填信息。", false);
+          return;
+        }
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(payload.email)) {
+          setMsg("邮箱格式不正确。", false);
+          return;
+        }
+
+        try {
+          var endpoint = (API_BASE ? API_BASE.replace(/\/$/, "") : "") + "/api/registrations";
+          var resp = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+
+          var raw = "";
+          var data = null;
+          try {
+            raw = await resp.text();
+            data = raw ? JSON.parse(raw) : null;
+          } catch (parseErr) {
+            data = null;
+          }
+
+          if (!resp.ok) {
+            var backendMsg = data && data.error ? data.error : "";
+            throw new Error(backendMsg || ("提交失败（HTTP " + resp.status + "）。后端可能未部署或接口地址未接通。"));
+          }
+
+          setMsg("提交成功，感谢登记。", true);
+          form.reset();
+        } catch (err) {
+          setMsg(err.message || "提交失败，请稍后再试。", false);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

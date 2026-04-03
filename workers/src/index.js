@@ -90,19 +90,19 @@ function validateRegistration(payload) {
 async function handleApi(request, env) {
   const url = new URL(request.url);
   const c = getCorsHeaders(request, env);
-    if (!c) {
-      if (request.method === "OPTIONS") {
-        return new Response(null, { status: 403 });
-      }
-      return new Response(JSON.stringify({ error: "CORS: 前端域名未加入 Worker 的 ALLOWED_ORIGINS" }), {
-        status: 403,
-        headers: { "Content-Type": "application/json; charset=utf-8" }
-      });
+  if (!c) {
+    if (request.method === "OPTIONS") {
+      return new Response(null, { status: 403 });
     }
+    return new Response(JSON.stringify({ error: "CORS: 前端域名未加入 Worker 的 ALLOWED_ORIGINS" }), {
+      status: 403,
+      headers: { "Content-Type": "application/json; charset=utf-8" }
+    });
+  }
 
-    if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: c });
+  if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: c });
 
-    try {
+  try {
       if (url.pathname === "/api/health" && request.method === "GET") {
         return json({ ok: true, service: "firedragon-members-api", time: new Date().toISOString() }, 200, c);
       }
@@ -220,9 +220,9 @@ async function handleApi(request, env) {
       }
 
       return json({ error: "Not Found" }, 404, c);
-    } catch (err) {
-      return json({ error: err && err.message ? err.message : "服务器错误" }, 500, c);
-    }
+  } catch (err) {
+    return json({ error: err && err.message ? err.message : "服务器错误" }, 500, c);
+  }
 }
 
 export default {

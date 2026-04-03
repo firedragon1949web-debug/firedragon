@@ -1,0 +1,22 @@
+# 防止 D1 database_id 仍为占位符时合并/推送：否则 wrangler deploy 往往失败，线上表现为 /api/* 404。
+name: Check D1 in wrangler.toml
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  database-id:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ensure wrangler.toml exists at repo root
+        run: test -f wrangler.toml
+      - name: Reject D1 placeholder
+        run: |
+          if grep -q 'REPLACE_WITH_YOUR_D1_DATABASE_ID' wrangler.toml; then
+            echo "::error title=D1 未配置::仓库根 wrangler.toml 的 database_id 仍是占位符。请在 Cloudflare 创建 D1 或将控制台中的 database_id 写入 wrangler.toml，再 npm run deploy 或推送。"
+            exit 1
+          fi
+          echo "database_id 已不是占位符。"

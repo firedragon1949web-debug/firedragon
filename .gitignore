@@ -20,3 +20,6 @@ Desktop.ini
 
 # Local Claude / IDE
 .claude/
+
+# 历史调试会话遗留日志
+debug-338004.log
