@@ -1,0 +1,14 @@
+{
+  "name": "firedragon-members-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:migrate:local": "wrangler d1 execute firedragon_members --local --file=./schema.sql"
+  },
+  "devDependencies": {
+    "wrangler": "latest"
+  }
+}

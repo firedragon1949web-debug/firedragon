@@ -1,0 +1,192 @@
+function json(data, status = 200, extraHeaders = {}) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      ...extraHeaders
+    }
+  });
+}
+
+function corsHeaders(origin, env) {
+  const allowOrigin = env.ALLOWED_ORIGIN || origin || "*";
+  return {
+    "Access-Control-Allow-Origin": allowOrigin,
+    "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Access-Control-Allow-Credentials": "true",
+    "Vary": "Origin"
+  };
+}
+
+function parseCookie(cookieHeader) {
+  const out = {};
+  if (!cookieHeader) return out;
+  cookieHeader.split(";").forEach((x) => {
+    const idx = x.indexOf("=");
+    if (idx > -1) out[x.slice(0, idx).trim()] = decodeURIComponent(x.slice(idx + 1).trim());
+  });
+  return out;
+}
+
+async function sha256Hex(text) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+function randomToken() {
+  const arr = new Uint8Array(32);
+  crypto.getRandomValues(arr);
+  return btoa(String.fromCharCode(...arr)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+async function requireAdmin(request, env) {
+  const cookies = parseCookie(request.headers.get("Cookie"));
+  const token = cookies.admin_session;
+  if (!token) return null;
+  const tokenHash = await sha256Hex(token);
+  const now = new Date().toISOString();
+  const row = await env.DB.prepare(
+    `SELECT s.id, s.admin_id, a.username
+     FROM admin_sessions s
+     JOIN admins a ON a.id = s.admin_id
+     WHERE s.token_hash = ?1 AND s.expires_at > ?2`
+  ).bind(tokenHash, now).first();
+  return row || null;
+}
+
+function validateRegistration(payload) {
+  const required = ["name", "email", "country_region", "phone_country_code", "phone_number"];
+  for (const key of required) {
+    if (!payload[key] || String(payload[key]).trim() === "") return `缺少字段: ${key}`;
+  }
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(payload.email))) return "邮箱格式不正确";
+  return null;
+}
+
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+    const origin = request.headers.get("Origin");
+    const c = corsHeaders(origin, env);
+
+    if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: c });
+
+    try {
+      if (url.pathname === "/api/registrations" && request.method === "POST") {
+        const body = await request.json();
+        const err = validateRegistration(body);
+        if (err) return json({ error: err }, 400, c);
+
+        await env.DB.prepare(
+          `INSERT INTO registrations
+          (name, email, country_region, phone_country_code, phone_number, vip_number)
+          VALUES (?1, ?2, ?3, ?4, ?5, ?6)`
+        ).bind(
+          String(body.name).trim(),
+          String(body.email).trim(),
+          String(body.country_region).trim(),
+          String(body.phone_country_code).trim(),
+          String(body.phone_number).trim(),
+          body.vip_number ? String(body.vip_number).trim() : null
+        ).run();
+
+        return json({ ok: true }, 201, c);
+      }
+
+      if (url.pathname === "/api/admin/login" && request.method === "POST") {
+        const body = await request.json();
+        const username = String(body.username || "").trim();
+        const password = String(body.password || "");
+        if (!username || !password) return json({ error: "账号或密码不能为空" }, 400, c);
+
+        const admin = await env.DB.prepare("SELECT id, username, password_hash FROM admins WHERE username = ?1")
+          .bind(username).first();
+        if (!admin) return json({ error: "账号或密码错误" }, 401, c);
+
+        const inputHash = await sha256Hex(password);
+        if (inputHash !== admin.password_hash) return json({ error: "账号或密码错误" }, 401, c);
+
+        const token = randomToken();
+        const tokenHash = await sha256Hex(token);
+        const sessionDays = parseInt(env.SESSION_DAYS || "7", 10);
+        const expires = new Date(Date.now() + sessionDays * 24 * 60 * 60 * 1000).toISOString();
+        await env.DB.prepare(
+          "INSERT INTO admin_sessions (admin_id, token_hash, expires_at) VALUES (?1, ?2, ?3)"
+        ).bind(admin.id, tokenHash, expires).run();
+
+        return json(
+          { ok: true, username: admin.username },
+          200,
+          {
+            ...c,
+            "Set-Cookie": `admin_session=${encodeURIComponent(token)}; HttpOnly; Secure; Path=/; SameSite=Lax; Max-Age=${sessionDays * 24 * 60 * 60}`
+          }
+        );
+      }
+
+      if (url.pathname === "/api/admin/logout" && request.method === "POST") {
+        const cookies = parseCookie(request.headers.get("Cookie"));
+        const token = cookies.admin_session;
+        if (token) {
+          const tokenHash = await sha256Hex(token);
+          await env.DB.prepare("DELETE FROM admin_sessions WHERE token_hash = ?1").bind(tokenHash).run();
+        }
+        return json({ ok: true }, 200, { ...c, "Set-Cookie": "admin_session=; HttpOnly; Secure; Path=/; SameSite=Lax; Max-Age=0" });
+      }
+
+      if (url.pathname === "/api/admin/me" && request.method === "GET") {
+        const admin = await requireAdmin(request, env);
+        if (!admin) return json({ error: "未登录" }, 401, c);
+        return json({ ok: true, user: { id: admin.admin_id, username: admin.username } }, 200, c);
+      }
+
+      if (url.pathname === "/api/admin/registrations" && request.method === "GET") {
+        const admin = await requireAdmin(request, env);
+        if (!admin) return json({ error: "未授权" }, 401, c);
+
+        const rs = await env.DB.prepare(
+          `SELECT id, name, email, country_region, phone_country_code, phone_number, vip_number, created_at
+           FROM registrations ORDER BY id DESC`
+        ).all();
+        return json({ ok: true, items: rs.results || [] }, 200, c);
+      }
+
+      if (url.pathname.startsWith("/api/admin/registrations/")) {
+        const admin = await requireAdmin(request, env);
+        if (!admin) return json({ error: "未授权" }, 401, c);
+        const id = Number(url.pathname.split("/").pop());
+        if (!id) return json({ error: "无效ID" }, 400, c);
+
+        if (request.method === "DELETE") {
+          await env.DB.prepare("DELETE FROM registrations WHERE id = ?1").bind(id).run();
+          return json({ ok: true }, 200, c);
+        }
+
+        if (request.method === "PUT") {
+          const body = await request.json();
+          const err = validateRegistration(body);
+          if (err) return json({ error: err }, 400, c);
+          await env.DB.prepare(
+            `UPDATE registrations
+             SET name=?1, email=?2, country_region=?3, phone_country_code=?4, phone_number=?5, vip_number=?6
+             WHERE id=?7`
+          ).bind(
+            String(body.name).trim(),
+            String(body.email).trim(),
+            String(body.country_region).trim(),
+            String(body.phone_country_code).trim(),
+            String(body.phone_number).trim(),
+            body.vip_number ? String(body.vip_number).trim() : null,
+            id
+          ).run();
+          return json({ ok: true }, 200, c);
+        }
+      }
+
+      return json({ error: "Not Found" }, 404, c);
+    } catch (err) {
+      return json({ error: err && err.message ? err.message : "服务器错误" }, 500, c);
+    }
+  }
+};

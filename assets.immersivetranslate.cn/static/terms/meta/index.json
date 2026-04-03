@@ -1,0 +1,1125 @@
+[
+  {
+    "id": "default",
+    "name": "Default",
+    "description": "Default glossary",
+    "author": "self",
+    "glossary": "default",
+    "langs": [
+      "auto"
+    ],
+    "i18ns": {
+      "zh-CN": {
+        "name": "默认",
+        "description": "默认术语库"
+      },
+      "zh-TW": {
+        "name": "預設",
+        "description": "預設術語庫"
+      },
+      "en": {
+        "name": "Default",
+        "description": "Default glossary"
+      },
+      "ja": {
+        "name": "デフォルト",
+        "description": "デフォルトの用語集"
+      },
+      "ar": {
+        "name": "افتراضي",
+        "description": "قائمة المصطلحات الافتراضية"
+      },
+      "de": {
+        "name": "Standard",
+        "description": "Standard-Glossar"
+      },
+      "es": {
+        "name": "Predeterminado",
+        "description": "Glosario predeterminado"
+      },
+      "fa": {
+        "name": "پیش‌فرض",
+        "description": "واژه‌نامه پیش‌فرض"
+      },
+      "fr": {
+        "name": "Défaut",
+        "description": "Glossaire par défaut"
+      },
+      "he": {
+        "name": "ברירת מחדל",
+        "description": "מילון מונחים ברירת מחדל"
+      },
+      "hi": {
+        "name": "डिफ़ॉल्ट",
+        "description": "डिफ़ॉल्ट शब्दावली"
+      },
+      "hu": {
+        "name": "Alapértelmezett",
+        "description": "Alapértelmezett szószedet"
+      },
+      "it": {
+        "name": "Predefinito",
+        "description": "Glossario predefinito"
+      },
+      "pt-BR": {
+        "name": "Padrão",
+        "description": "Glossário padrão"
+      },
+      "ru": {
+        "name": "По умолчанию",
+        "description": "Глоссарий по умолчанию"
+      },
+      "ko": {
+        "name": "기본값",
+        "description": "기본 용어집"
+      },
+      "pt-PT": {
+        "name": "Padrão",
+        "description": "Glossário padrão"
+      },
+      "tr": {
+        "name": "Varsayılan",
+        "description": "Varsayılan sözlük"
+      }
+    },
+    "langsHash": {
+      "auto": "97ba8425b9c415bfc5814bad997509213e863bc4b0a8cb4b0e8e9ba9d33bb3d3"
+    }
+  },
+  {
+    "id": "twitter",
+    "name": "Twitter",
+    "description": "推特术语库，包含名人等相关术语的中文翻译。",
+    "author": "immersive",
+    "glossary": "twitter",
+    "langs": [
+      "zh-CN",
+      "zh-TW"
+    ],
+    "i18ns": {
+      "zh-CN": {
+        "name": "推特",
+        "description": "推特术语库，包含名人等相关术语的中文翻译。"
+      },
+      "zh-TW": {
+        "name": "推特",
+        "description": "推特術語庫，包含名人等相關術語的中文翻譯。"
+      },
+      "en": {
+        "name": "Twitter",
+        "description": "Twitter glossary, containing Chinese translations of related terms such as celebrities and social media platforms."
+      }
+    },
+    "matches": [
+      "twitter.com",
+      "mobile.twitter.com",
+      "tweetdeck.twitter.com",
+      "pro.twitter.com",
+      "https://platform.twitter.com/embed*",
+      "x.com",
+      "mobile.x.com",
+      "tweetdeck.x.com",
+      "pro.x.com",
+      "https://platform.x.com/embed*"
+    ],
+    "langsHash": {
+      "zh-CN": "032d3f5da97c899c32292506acbee3e40164de76bf0749fecffe5b3f77cb2920",
+      "zh-TW": "c30687c71525f809057d08c351ccff3c97c9660ad162cc4f17d575375f6ecd1b"
+    }
+  },
+  {
+    "id": "web3",
+    "name": "Web3 Expert",
+    "description": "Specialized in translating Web3 and blockchain content, ensuring accurate and idiomatic translations for cryptocurrency, DeFi, NFT, and blockchain technology terminology.",
+    "author": "immersive",
+    "glossary": "web3",
+    "langs": [
+      "auto",
+      "zh-CN",
+      "zh-TW"
+    ],
+    "i18ns": {
+      "zh-CN": {
+        "name": "Web3",
+        "description": "Web3术语库，包含加密货币、DeFi、NFT和区块链技术相关术语的中文翻译。"
+      },
+      "zh-TW": {
+        "name": "Web3",
+        "description": "Web3術語庫，包含加密貨幣、DeFi、NFT和區塊鏈技術相關術語的繁體中文翻譯。"
+      },
+      "en": {
+        "name": "Web3 Expert",
+        "description": "Specialized in translating Web3 and blockchain content, ensuring accurate and idiomatic translations for cryptocurrency, DeFi, NFT, and blockchain technology terminology."
+      },
+      "ja": {
+        "name": "Web3エキスパート",
+        "description": "Web3およびブロックチェーンコンテンツの翻訳を専門とし、暗号通貨、DeFi、NFT、ブロックチェーン技術用語の正確で慣用的な翻訳を保証します。"
+      },
+      "ar": {
+        "name": "خبير Web3",
+        "description": "متخصص في ترجمة محتوى Web3 و blockchain، مع ضمان ترجمات دقيقة ومناسبة لمصطلحات العملات المشفرة و DeFi و NFT وتقنية blockchain."
+      },
+      "de": {
+        "name": "Web3-Experte",
+        "description": "Spezialisiert auf die Übersetzung von Web3- und Blockchain-Inhalten, um genaue und idiomatische Übersetzungen für Kryptowährungs-, DeFi-, NFT- und Blockchain-Technologie-Terminologie zu gewährleisten."
+      },
+      "es": {
+        "name": "Experto en Web3",
+        "description": "Especializado en la traducción de contenido de Web3 y blockchain, garantizando traducciones precisas e idiomáticas para la terminología de criptomonedas, DeFi, NFT y tecnología blockchain."
+      },
+      "fa": {
+        "name": "کارشناس وب۳",
+        "description": "متخصص در ترجمه محتوای وب۳ و بلاک‌چین، تضمین ترجمه‌های دقیق و اصطلاحی برای اصطلاحات ارزهای دیجیتال، دیفای، ان‌اف‌تی و فناوری بلاک‌چین."
+      },
+      "fr": {
+        "name": "Expert Web3",
+        "description": "Spécialisé dans la traduction de contenu Web3 et blockchain, assurant des traductions précises et idiomatiques pour la terminologie des cryptomonnaies, de la DeFi, des NFT et de la technologie blockchain."
+      },
+      "he": {
+        "name": "מומחה Web3",
+        "description": "מתמחה בתרגום תוכן Web3 ובלוקצ'יין, תוך הבטחת תרגומים מדויקים ואידיומטיים לטרמינולוגיה של מטבעות קריפטוגרפיים, DeFi, NFT וטכנולוגיית בלוקצ'יין."
+      },
+      "hi": {
+        "name": "Web3 विशेषज्ञ",
+        "description": "Web3 और ब्लॉकचेन सामग्री का अनुवाद करने में विशेषज्ञता, क्रिप्टोकरेंसी, DeFi, NFT और ब्लॉकचेन प्रौद्योगिकी शब्दावली के लिए सटीक और मुहावरेदार अनुवाद सुनिश्चित करना।"
+      },
+      "hu": {
+        "name": "Web3 szakértő",
+        "description": "Web3 és blokklánc tartalmak fordítására szakosodott, biztosítva a kriptovaluta, DeFi, NFT és blokklánc technológiai terminológia pontos és idiomatikus fordítását."
+      },
+      "it": {
+        "name": "Esperto Web3",
+        "description": "Specializzato nella traduzione di contenuti Web3 e blockchain, garantendo traduzioni accurate e idiomatiche per la terminologia di criptovaluta, DeFi, NFT e tecnologia blockchain."
+      },
+      "ru": {
+        "name": "Эксперт Web3",
+        "description": "Специализируется на переводе контента Web3 и блокчейна, обеспечивая точные и идиоматические переводы для терминологии криптовалют, DeFi, NFT и технологии блокчейн."
+      },
+      "ko": {
+        "name": "Web3 전문가",
+        "description": "Web3 및 블록체인 콘텐츠 번역 전문가로서 암호화폐, DeFi, NFT, 블록체인 기술 용어에 대한 정확하고 자연스러운 번역을 보장합니다."
+      },
+      "pt-PT": {
+        "name": "Especialista em Web3",
+        "description": "Especializado na tradução de conteúdo Web3 e blockchain, garantindo traduções precisas e idiomáticas para terminologia de criptomoeda, DeFi, NFT e tecnologia blockchain."
+      },
+      "pt-BR": {
+        "name": "Especialista em Web3",
+        "description": "Especializado na tradução de conteúdo Web3 e blockchain, garantindo traduções precisas e idiomáticas para terminologia de criptomoeda, DeFi, NFT e tecnologia blockchain."
+      },
+      "tr": {
+        "name": "Web3 Uzmanı",
+        "description": "Web3 ve blockchain içeriğinin çevirisinde uzmanlaşmış, kripto para birimi, DeFi, NFT ve blockchain teknolojisi terminolojisi için doğru ve deyimsel çeviriler sağlamaktadır."
+      }
+    },
+    "langsHash": {
+      "auto": "fa45d0dbfac5ee5e8e65acd221bb1859bcccb93a5205a2d3948ed4ba6ca03b2d",
+      "zh-CN": "2202a8432c765a9b38d12a48eeb55896631780a4fc665a4b8d78b6cc4026be03",
+      "zh-TW": "8b2e8558726cc49f523ee83b1810509d370955ce9e2d4cf0247c74017dc761d1"
+    }
+  },
+  {
+    "id": "tech",
+    "name": "Technology Expert",
+    "description": "Focuses on general technology concepts, including hardware, AI models, and major tech companies.",
+    "author": "immersive",
+    "glossary": "tech",
+    "langs": [
+      "auto",
+      "zh-CN",
+      "zh-TW"
+    ],
+    "i18ns": {
+      "zh-CN": {
+        "name": "科技",
+        "description": "专注于通用科技概念，涵盖硬件、AI 模型和主要科技公司。"
+      },
+      "zh-TW": {
+        "name": "科技",
+        "description": "專注於通用科技概念，涵蓋硬體、AI 模型和主要科技公司。"
+      },
+      "en": {
+        "name": "Technology Expert",
+        "description": "Focuses on general technology concepts, including hardware, AI models, and major tech companies."
+      },
+      "ja": {
+        "name": "テクノロジーエキスパート",
+        "description": "ハードウェア、AIモデル、主要なテクノロジー企業を含む一般的な技術コンセプトに焦点を当てています。"
+      },
+      "ar": {
+        "name": "خبير تكنولوجيا",
+        "description": "يركز على مفاهيم التكنولوجيا العامة، بما في ذلك الأجهزة ونماذج الذكاء الاصطناعي وشركات التكنولوجيا الكبرى."
+      },
+      "de": {
+        "name": "Technologie-Experte",
+        "description": "Konzentriert sich auf allgemeine Technologiekonzepte, einschließlich Hardware, KI-Modelle und große Technologieunternehmen."
+      },
+      "es": {
+        "name": "Experto en Tecnología",
+        "description": "Se centra en conceptos generales de tecnología, incluyendo hardware, modelos de IA y las principales empresas tecnológicas."
+      },
+      "fa": {
+        "name": "کارشناس فناوری",
+        "description": "بر مفاهیم کلی فناوری، از جمله سخت‌افزار، مدل‌های هوش مصنوعی و شرکت‌های بزرگ فناوری تمرکز دارد."
+      },
+      "fr": {
+        "name": "Expert en technologie",
+        "description": "Se concentre sur les concepts technologiques généraux, y compris le matériel, les modèles d'IA et les grandes entreprises technologiques."
+      },
+      "he": {
+        "name": "מומחה טכנולוגיה",
+        "description": "מתמקד במושגי טכנולוגיה כלליים, כולל חומרה, מודלי בינה מלאכותית וחברות טכנולוגיה גדולות."
+      },
+      "hi": {
+        "name": "प्रौद्योगिकी विशेषज्ञ",
+        "description": "सामान्य प्रौद्योगिकी अवधारणाओं पर ध्यान केंद्रित करता है, जिसमें हार्डवेयर, एआई मॉडल और प्रमुख तकनीकी कंपनियां शामिल हैं।"
+      },
+      "hu": {
+        "name": "Technológiai szakértő",
+        "description": "Általános technológiai koncepciókra összpontosít, beleértve a hardvert, az MI-modelleket és a nagy technológiai vállalatokat."
+      },
+      "it": {
+        "name": "Esperto di Tecnologia",
+        "description": "Si concentra sui concetti tecnologici generali, tra cui hardware, modelli di IA e le principali aziende tecnologiche."
+      },
+      "ru": {
+        "name": "Эксперт по технологиям",
+        "description": "Фокусируется на общих технологических концепциях, включая оборудование, модели ИИ и крупные технологические компании."
+      },
+      "ko": {
+        "name": "기술 전문가",
+        "description": "하드웨어, AI 모델 및 주요 기술 회사를 포함한 일반적인 기술 개념에 중점을 둡니다."
+      },
+      "pt-PT": {
+        "name": "Especialista em Tecnologia",
+        "description": "Concentra-se em conceitos gerais de tecnologia, incluindo hardware, modelos de IA e grandes empresas de tecnologia."
+      },
+      "pt-BR": {
+        "name": "Especialista em Tecnologia",
+        "description": "Concentra-se em conceitos gerais de tecnologia, incluindo hardware, modelos de IA e grandes empresas de tecnologia."
+      },
+      "tr": {
+        "name": "Teknoloji Uzmanı",
+        "description": "Donanım, yapay zeka modelleri ve büyük teknoloji şirketleri dahil olmak üzere genel teknoloji kavramlarına odaklanır."
+      }
+    },
+    "langsHash": {
+      "auto": "707b8447054abb8726e1e486e3287eeeab7b60d84032968fe4e205fd33d5375f",
+      "zh-CN": "d7bc8c19113636cbe5e9dc6e6521c1d108797903bf8fe06927e13b76ab66835c",
+      "zh-TW": "9f30c0ea4c28f1ce88df46936befb978943bb25c1f85bc85355cc33b0b8acaac"
+    }
+  },
+  {
+    "id": "news",
+    "name": "News Media Expert",
+    "description": "Specialized in translating news media content, ensuring accurate and idiomatic translations for news articles, reports, and media-related content.",
+    "author": "immersive",
+    "glossary": "news",
+    "langs": [
+      "zh-CN",
+      "zh-TW"
+    ],
+    "i18ns": {
+      "zh-CN": {
+        "name": "新闻媒体",
+        "description": "新闻媒体术语库，包含新闻报道、媒体行业相关术语的中文翻译。"
+      },
+      "zh-TW": {
+        "name": "新聞媒體",
+        "description": "新聞媒體術語庫，包含新聞報導、媒體行業相關術語的繁體中文翻譯。"
+      },
+      "en": {
+        "name": "News Media Expert",
+        "description": "Specialized in translating news media content, ensuring accurate and idiomatic translations for news articles, reports, and media-related content."
+      }
+    },
+    "langsHash": {
+      "zh-CN": "695c7dbea9cd6e08ed58eae80431bfaa0deedee13f2a788de6e96c20fb0195d8",
+      "zh-TW": "69bcee43c5779d7b3af782b607074024874e5417404c0d637245228c40bbbaef"
+    }
+  },
+  {
+    "id": "ao3",
+    "name": "AO3",
+    "description": "AO3 术语库，包含同人小说、标签、分级、警告等相关术语的中文翻译。",
+    "author": "immersive",
+    "glossary": "ao3",
+    "langs": [
+      "zh-CN",
+      "zh-TW"
+    ],
+    "i18ns": {
+      "zh-CN": {
+        "name": "AO3",
+        "description": "AO3 术语库，包含同人小说、标签、分级、警告等相关术语的中文翻译。"
+      },
+      "zh-TW": {
+        "name": "AO3",
+        "description": "AO3 術語庫，包含同人小說、標籤、分級、警告等相關術語的中文翻譯。"
+      },
+      "en": {
+        "name": "AO3",
+        "description": "AO3 glossary, containing Chinese translations of related terms such as fanfiction, tags, ratings, and warnings."
+      }
+    },
+    "langsHash": {
+      "zh-CN": "92ff31cd0864be5c0d0670fe5f99c33276ea21c3dbd6670f0551024c69684d31",
+      "zh-TW": "5e016d7b0806b807034f1dcafea3c8a2c207d1a369e46bb85b729cca306b6590"
+    }
+  },
+  {
+    "id": "programming",
+    "name": "Programming",
+    "description": "Glossary for programming languages, software development concepts, and related IT terminology.",
+    "author": "immersive",
+    "glossary": "programming",
+    "langs": [
+      "auto",
+      "zh-CN",
+      "zh-TW"
+    ],
+    "i18ns": {
+      "zh-CN": {
+        "name": "编程",
+        "description": "包含编程语言、软件开发概念及相关 IT 术语的词汇表。"
+      },
+      "zh-TW": {
+        "name": "程式設計",
+        "description": "包含程式語言、軟體開發概念及相關 IT 術語的詞彙表。"
+      },
+      "en": {
+        "name": "Programming",
+        "description": "Glossary for programming languages, software development concepts, and related IT terminology."
+      },
+      "ja": {
+        "name": "プログラミング",
+        "description": "プログラミング言語、ソフトウェア開発コンセプト、および関連するIT用語の用語集。"
+      },
+      "ar": {
+        "name": "برمجة",
+        "description": "مسرد للغات البرمجة ومفاهيم تطوير البرامج ومصطلحات تكنولوجيا المعلومات ذات الصلة."
+      },
+      "de": {
+        "name": "Programmierung",
+        "description": "Glossar für Programmiersprachen, Softwareentwicklungskonzepte und verwandte IT-Terminologie."
+      },
+      "es": {
+        "name": "Programación",
+        "description": "Glosario de lenguajes de programación, conceptos de desarrollo de software y terminología informática relacionada."
+      },
+      "fa": {
+        "name": "برنامه‌نویسی",
+        "description": "واژه‌نامه زبان‌های برنامه‌نویسی، مفاهیم توسعه نرم‌افزار و اصطلاحات مرتبط با فناوری اطلاعات."
+      },
+      "fr": {
+        "name": "Programmation",
+        "description": "Glossaire des langages de programmation, des concepts de développement logiciel et de la terminologie informatique associée."
+      },
+      "he": {
+        "name": "תכנות",
+        "description": "מילון מונחים לשפות תכנות, מושגי פיתוח תוכנה וטרמינולוגיה קשורה של IT."
+      },
+      "hi": {
+        "name": "प्रोग्रामिंग",
+        "description": "प्रोग्रामिंग भाषाओं, सॉफ्टवेयर विकास अवधारणाओं और संबंधित आईटी शब्दावली के लिए शब्दावली।"
+      },
+      "hu": {
+        "name": "Programozás",
+        "description": "Szószedet programozási nyelvekhez, szoftverfejlesztési koncepciókhoz és kapcsolódó informatikai terminológiához."
+      },
+      "it": {
+        "name": "Programmazione",
+        "description": "Glossario per linguaggi di programmazione, concetti di sviluppo software e terminologia informatica correlata."
+      },
+      "ru": {
+        "name": "Программирование",
+        "description": "Глоссарий языков программирования, концепций разработки программного обеспечения и связанной ИТ-терминологии."
+      },
+      "ko": {
+        "name": "프로그래밍",
+        "description": "프로그래밍 언어, 소프트웨어 개발 개념 및 관련 IT 용어집."
+      },
+      "pt-PT": {
+        "name": "Programação",
+        "description": "Glossário para linguagens de programação, conceitos de desenvolvimento de software e terminologia de TI relacionada."
+      },
+      "pt-BR": {
+        "name": "Programação",
+        "description": "Glossário para linguagens de programação, conceitos de desenvolvimento de software e terminologia de TI relacionada."
+      },
+      "tr": {
+        "name": "Programlama",
+        "description": "Programlama dilleri, yazılım geliştirme kavramları ve ilgili BT terminolojisi sözlüğü."
+      }
+    },
+    "langsHash": {
+      "auto": "ae0da62b2c8e7e7b4475c8b5cf7ed40eb74f97c9b1f2d7ce98ac8fce46352e29",
+      "zh-CN": "d291b19b1526b4694e43045df8e036779aae18223bb57cdb502cb6b1fd0379d0",
+      "zh-TW": "15f05b9d223e1ce95e5826c76692632e92201d3fb769734286d280b1e263df2e"
+    }
+  },
+  {
+    "id": "education",
+    "name": "Education",
+    "description": "教育术语库，包含教学、学习、课程等相关术语的中文翻译。",
+    "author": "immersive",
+    "glossary": "education",
+    "langs": [
+      "zh-CN",
+      "zh-TW"
+    ],
+    "i18ns": {
+      "zh-CN": {
+        "name": "教育",
+        "description": "教育术语库，包含教学、学习、课程等相关术语的中文翻译。"
+      },
+      "zh-TW": {
+        "name": "教育",
+        "description": "教育術語庫，包含教學、學習、課程等相關術語的中文翻譯。"
+      },
+      "en": {
+        "name": "Education",
+        "description": "Education glossary, containing Chinese translations of related terms such as teaching, learning, and courses."
+      }
+    },
+    "langsHash": {
+      "zh-CN": "0fe09222f13fda06f5d6dfe55a136e9a38d0fc31072ade0d223d1e0a3f8f4855",
+      "zh-TW": "0e5b6921a4d916ddad3973b88fe0b96c1b08f8131ba6128622ee5ae6b22ddd8b"
+    }
+  },
+  {
+    "id": "finance",
+    "name": "Finance",
+    "description": "金融术语库，包含投资、交易、市场等相关术语的中文翻译。",
+    "author": "immersive",
+    "glossary": "finance",
+    "langs": [
+      "zh-CN",
+      "zh-TW"
+    ],
+    "i18ns": {
+      "zh-CN": {
+        "name": "金融",
+        "description": "金融术语库，包含投资、交易、市场等相关术语的中文翻译。"
+      },
+      "zh-TW": {
+        "name": "金融",
+        "description": "金融術語庫，包含投資、交易、市場等相關術語的中文翻譯。"
+      },
+      "en": {
+        "name": "Finance",
+        "description": "Finance glossary, containing Chinese translations of related terms such as investment, trading, and market."
+      }
+    },
+    "langsHash": {
+      "zh-CN": "7508eb7ffbcbca0bc08c74c78e335f890e0b814941eacab6381d99a8b12df779",
+      "zh-TW": "54f9af3c75a0fe1e02ce577c9a5ccda32d14fa49ebc1382fa5b4f96a2c923bb7"
+    }
+  },
+  {
+    "id": "legal",
+    "name": "Legal",
+    "description": "法律术语库，包含法律概念、程序、文件等相关术语的中文翻译。",
+    "author": "immersive",
+    "glossary": "legal",
+    "langs": [
+      "zh-CN",
+      "zh-TW"
+    ],
+    "i18ns": {
+      "zh-CN": {
+        "name": "法律",
+        "description": "法律术语库，包含法律概念、程序、文件等相关术语的中文翻译。"
+      },
+      "zh-TW": {
+        "name": "法律",
+        "description": "法律術語庫，包含法律概念、程序、文件等相關術語的中文翻譯。"
+      },
+      "en": {
+        "name": "Legal",
+        "description": "Legal glossary, containing Chinese translations of related terms such as legal concepts, procedures, and documents."
+      }
+    },
+    "langsHash": {
+      "zh-CN": "599dbe1f56ce2c8d49c97ff155d3d18b65191363ed96988808fccc1ae964d5e2",
+      "zh-TW": "76ab18b52e4a23b4207b15c4dc2b9abf184593a48b34737daa808f2450dc5166"
+    }
+  },
+  {
+    "id": "car",
+    "name": "Car Expert",
+    "description": "Specialized in translating automotive-related content, ensuring accurate and idiomatic translations for car terms, parts, technology, and automotive-related content.",
+    "author": "immersive",
+    "glossary": "car",
+    "langs": [
+      "zh-CN",
+      "zh-TW"
+    ],
+    "i18ns": {
+      "zh-CN": {
+        "name": "汽车",
+        "description": "汽车术语库，包含汽车零部件、技术和汽车工业相关术语的中文翻译。"
+      },
+      "zh-TW": {
+        "name": "汽車",
+        "description": "汽車術語庫，包含汽車零組件、技術和汽車工業相關術語的繁體中文翻譯。"
+      },
+      "en": {
+        "name": "Car Expert",
+        "description": "Specialized in translating automotive-related content, ensuring accurate and idiomatic translations for car terms, parts, technology, and automotive-related content."
+      }
+    },
+    "langsHash": {
+      "zh-CN": "57a6f3a7ff25d7cc063de241e68bf55abc1702ff61e9cea360a5336a65f7f195",
+      "zh-TW": "5ec4bee134443719eed997b91d51c70875bfa73cd92ea951374afac92b0f3f6c"
+    }
+  },
+  {
+    "id": "ecommerce",
+    "name": "E-commerce Expert",
+    "description": "Specialized in translating e-commerce content, ensuring accurate and idiomatic translations for online shopping, product listings, and e-commerce related content.",
+    "author": "immersive",
+    "glossary": "ecommerce",
+    "langs": [
+      "zh-CN",
+      "zh-TW"
+    ],
+    "i18ns": {
+      "zh-CN": {
+        "name": "电商",
+        "description": "电子商务术语库，包含在线购物、产品列表和电商平台相关术语的中文翻译。"
+      },
+      "zh-TW": {
+        "name": "電商",
+        "description": "電子商務術語庫，包含線上購物、產品列表和電商平台相關術語的繁體中文翻譯。"
+      },
+      "en": {
+        "name": "E-commerce Expert",
+        "description": "Specialized in translating e-commerce content, ensuring accurate and idiomatic translations for online shopping, product listings, and e-commerce related content."
+      }
+    },
+    "langsHash": {
+      "zh-CN": "c1a6fed60b18331d7969da303d3d09e40481a7eb4d7c03f1e2af5534632c5cfc",
+      "zh-TW": "50f1dfd6ecb9da9e7b155fc5c39b069fe1cac3b7229332dfbf814318db9d29fe"
+    }
+  },
+  {
+    "id": "fashion",
+    "name": "Fashion Expert",
+    "description": "Specialized in translating fashion-related content, ensuring accurate and idiomatic translations for fashion terms, clothing, accessories, and fashion-related content.",
+    "author": "immersive",
+    "glossary": "fashion",
+    "langs": [
+      "zh-CN",
+      "zh-TW"
+    ],
+    "i18ns": {
+      "zh-CN": {
+        "name": "时尚",
+        "description": "时尚术语库，包含服装、配饰和时尚产业相关术语的中文翻译。"
+      },
+      "zh-TW": {
+        "name": "時尚",
+        "description": "時尚術語庫，包含服裝、配飾和時尚產業相關術語的繁體中文翻譯。"
+      },
+      "en": {
+        "name": "Fashion Expert",
+        "description": "Specialized in translating fashion-related content, ensuring accurate and idiomatic translations for fashion terms, clothing, accessories, and fashion-related content."
+      }
+    },
+    "langsHash": {
+      "zh-CN": "64b352004e6fc6703b7ca354f69ab533f532d22cfa1511492ab0fd60973e5406",
+      "zh-TW": "8ea1da8910d0c1ac47c5f0fb5ae3eda98d01b93bef4c311ad1e1ab03edb5b7c9"
+    }
+  },
+  {
+    "id": "food",
+    "name": "Food Expert",
+    "description": "Specialized in translating food-related content, ensuring accurate and idiomatic translations for culinary terms, ingredients, cooking techniques, and food-related content.",
+    "author": "immersive",
+    "glossary": "food",
+    "langs": [
+      "zh-CN",
+      "zh-TW"
+    ],
+    "i18ns": {
+      "zh-CN": {
+        "name": "美食",
+        "description": "美食术语库，包含烹饪术语、食材、烹饪技巧相关术语的中文翻译。"
+      },
+      "zh-TW": {
+        "name": "美食",
+        "description": "美食術語庫，包含烹飪術語、食材、烹飪技巧相關術語的繁體中文翻譯。"
+      },
+      "en": {
+        "name": "Food Expert",
+        "description": "Specialized in translating food-related content, ensuring accurate and idiomatic translations for culinary terms, ingredients, cooking techniques, and food-related content."
+      }
+    },
+    "langsHash": {
+      "zh-CN": "a687187513fc84b8e48d96a71c496c37a0633f07d43d5b3636f747acf7e19dcb",
+      "zh-TW": "2f896a7f22ed7478704da052fd9997590d0e88455912ba5bc2be78fe786ca2cf"
+    }
+  },
+  {
+    "id": "gardening",
+    "name": "Gardening",
+    "description": "园艺术语库，包含植物、工具、技术等相关术语的中文翻译。",
+    "author": "immersive",
+    "glossary": "gardening",
+    "langs": [
+      "zh-CN",
+      "zh-TW"
+    ],
+    "i18ns": {
+      "zh-CN": {
+        "name": "园艺",
+        "description": "园艺术语库，包含植物、工具、技术等相关术语的中文翻译。"
+      },
+      "zh-TW": {
+        "name": "園藝",
+        "description": "園藝術語庫，包含植物、工具、技術等相關術語的中文翻譯。"
+      },
+      "en": {
+        "name": "Gardening",
+        "description": "Gardening glossary, containing Chinese translations of related terms such as plants, tools, and techniques."
+      }
+    },
+    "langsHash": {
+      "zh-CN": "57d49e55281b0ba6681aed0c414235ce556a6e55f9990a54ccf0a64ea7ba12c7",
+      "zh-TW": "74ff051522a14a90d6b1ee8c6a2bd1559e1e8c598cd265370b56665031b6d71e"
+    }
+  },
+  {
+    "id": "medical",
+    "name": "Medical",
+    "description": "医疗术语库，包含疾病、治疗、药物等相关术语的中文翻译。",
+    "author": "immersive",
+    "glossary": "medical",
+    "langs": [
+      "zh-CN",
+      "zh-TW"
+    ],
+    "i18ns": {
+      "zh-CN": {
+        "name": "医疗",
+        "description": "医疗术语库，包含疾病、治疗、药物等相关术语的中文翻译。"
+      },
+      "zh-TW": {
+        "name": "醫療",
+        "description": "醫療術語庫，包含疾病、治療、藥物等相關術語的中文翻譯。"
+      },
+      "en": {
+        "name": "Medical",
+        "description": "Medical glossary, containing Chinese translations of related terms such as diseases, treatments, and medications."
+      }
+    },
+    "langsHash": {
+      "zh-CN": "327ab4134bdd2255b281c125534f15dbd3df75fb3d2084c83a648ddc81328a86",
+      "zh-TW": "0697a292d7a43b02576be8917189a68ebd1e4fabc5a5b0af1568c71a4238f36e"
+    }
+  },
+  {
+    "id": "music",
+    "name": "Music",
+    "description": "音乐术语库，包含乐器、乐理、演奏等相关术语的中文翻译。",
+    "author": "immersive",
+    "glossary": "music",
+    "langs": [
+      "zh-CN",
+      "zh-TW"
+    ],
+    "i18ns": {
+      "zh-CN": {
+        "name": "音乐",
+        "description": "音乐术语库，包含乐器、乐理、演奏等相关术语的中文翻译。"
+      },
+      "zh-TW": {
+        "name": "音樂",
+        "description": "音樂術語庫，包含樂器、樂理、演奏等相關術語的中文翻譯。"
+      },
+      "en": {
+        "name": "Music",
+        "description": "Music glossary, containing Chinese translations of related terms such as instruments, music theory, and performance."
+      }
+    },
+    "langsHash": {
+      "zh-CN": "746a7f718f7e2080ac888604d4b0a476831f8e694fe65447ad4deff0e986c72d",
+      "zh-TW": "d4b2d1282d8f4aa206bf13c7e9ed9b9ba34b7d409dd91e1be42c8cd7989aedce"
+    }
+  },
+  {
+    "id": "pet",
+    "name": "Pet",
+    "description": "宠物术语库，包含宠物种类、护理、训练等相关术语的中文翻译。",
+    "author": "immersive",
+    "glossary": "pet",
+    "langs": [
+      "zh-CN",
+      "zh-TW"
+    ],
+    "i18ns": {
+      "zh-CN": {
+        "name": "宠物",
+        "description": "宠物术语库，包含宠物种类、护理、训练等相关术语的中文翻译。"
+      },
+      "zh-TW": {
+        "name": "寵物",
+        "description": "寵物術語庫，包含寵物品種、護理、訓練等相關術語的中文翻譯。"
+      },
+      "en": {
+        "name": "Pet",
+        "description": "Pet glossary, containing Chinese translations of related terms such as pet types, care, and training."
+      }
+    },
+    "langsHash": {
+      "zh-CN": "fb15c41acbea4571af3aec36909ad491777261b3bba1e1c594c12a91d22a0693",
+      "zh-TW": "d73efbc04a7898e37bf0c6771d78f5218651c968a71d8b293b1a5b8ea8e6679f"
+    }
+  },
+  {
+    "id": "sports",
+    "name": "Sports",
+    "description": "体育术语库，包含运动项目、规则、装备等相关术语的中文翻译。",
+    "author": "immersive",
+    "glossary": "sports",
+    "langs": [
+      "zh-CN",
+      "zh-TW"
+    ],
+    "i18ns": {
+      "zh-CN": {
+        "name": "体育",
+        "description": "体育术语库，包含运动项目、规则、装备等相关术语的中文翻译。"
+      },
+      "zh-TW": {
+        "name": "體育",
+        "description": "體育術語庫，包含運動項目、規則、裝備等相關術語的中文翻譯。"
+      },
+      "en": {
+        "name": "Sports",
+        "description": "Sports glossary, containing Chinese translations of related terms such as sports, rules, and equipment."
+      }
+    },
+    "langsHash": {
+      "zh-CN": "5fdc2f4acb75ed0507d6aec3328e5ded158179908aad06df30d386f705ecd505",
+      "zh-TW": "4aa6106d54116089816f0071aceb112da8452caadf073dfe24318674e62e9ee0"
+    }
+  },
+  {
+    "id": "travel",
+    "name": "Travel",
+    "description": "旅游术语库，包含景点、住宿、交通等相关术语的中文翻译。",
+    "author": "immersive",
+    "glossary": "travel",
+    "langs": [
+      "zh-CN",
+      "zh-TW"
+    ],
+    "i18ns": {
+      "zh-CN": {
+        "name": "旅游",
+        "description": "旅游术语库，包含景点、住宿、交通等相关术语的中文翻译。"
+      },
+      "zh-TW": {
+        "name": "旅遊",
+        "description": "旅遊術語庫，包含景點、住宿、交通等相關術語的中文翻譯。"
+      },
+      "en": {
+        "name": "Travel",
+        "description": "Travel glossary, containing Chinese translations of related terms such as attractions, accommodations, and transportation."
+      }
+    },
+    "langsHash": {
+      "zh-CN": "950c9a1aa761471e3ea9003807ff8ebc226fea5c29aef1cb0b464d8c63451644",
+      "zh-TW": "ed76db15cadef4807b76fb9478f6280d8e9df888e03c0b24933991754eca4664"
+    }
+  },
+  {
+    "id": "chess",
+    "name": "Chess Expert",
+    "description": "Specialized in translating chess-related content, ensuring accurate and idiomatic translations for chess.com articles and terminology.",
+    "author": "immersive",
+    "glossary": "chess",
+    "langs": [
+      "zh-CN",
+      "zh-TW"
+    ],
+    "i18ns": {
+      "zh-CN": {
+        "name": "国际象棋",
+        "description": "国际象棋术语库，包含棋类规则、战术和比赛相关术语的中文翻译。"
+      },
+      "zh-TW": {
+        "name": "棋藝",
+        "description": "國際象棋術語庫，包含棋類規則、戰術和比賽相關術語的繁體中文翻譯。"
+      },
+      "en": {
+        "name": "Chess Expert",
+        "description": "Specialized in translating chess-related content, ensuring accurate and idiomatic translations for chess.com articles and terminology."
+      }
+    },
+    "langsHash": {
+      "zh-CN": "b621185e9b5ff8619a5d0fc2f1a9549e770ca4e7741c30e5efc4e6aceba365fb",
+      "zh-TW": "f1bf5763aa0f51a8aee0b492a639163c89ab16ca0c59db2cb462b75dc2971af4"
+    }
+  },
+  {
+    "id": "game",
+    "name": "Game",
+    "description": "游戏术语库，包含游戏类型、玩法、设备等相关术语的中文翻译。",
+    "author": "immersive",
+    "glossary": "game",
+    "langs": [
+      "auto",
+      "zh-CN",
+      "zh-TW"
+    ],
+    "i18ns": {
+      "zh-CN": {
+        "name": "游戏",
+        "description": "游戏术语库，包含游戏类型、玩法、设备等相关术语的中文翻译。"
+      },
+      "zh-TW": {
+        "name": "遊戲",
+        "description": "遊戲術語庫，包含遊戲類型、玩法、設備等相關術語的中文翻譯。"
+      },
+      "en": {
+        "name": "Game",
+        "description": "Game glossary, containing Chinese translations of related terms such as game types, gameplay, and devices."
+      },
+      "ja": {
+        "name": "ゲーム",
+        "description": "ゲーム術語庫，包含ゲームタイプ、プレイ方法、デバイス等相關術語の日本語翻訳。"
+      },
+      "ar": {
+        "name": "اللعبة",
+        "description": "لعبة مصطلحات تحتوي على ترجمات عربية للمصطلحات المتعلقة بأنواع الألعاب وطريقة اللعب والأجهزة."
+      },
+      "de": {
+        "name": "Spiel",
+        "description": "Spiel glossary, containing German translations of related terms such as game types, gameplay, and devices."
+      },
+      "es": {
+        "name": "Juego",
+        "description": "Glosario de Juego, que contiene traducciones al español de términos relacionados como tipos de juego, jugabilidad y dispositivos."
+      },
+      "fa": {
+        "name": "بازی",
+        "description": "واژه‌نامه بازی، حاوی ترجمه‌های فارسی اصطلاحات مرتبط مانند انواع بازی، گیم‌پلی و دستگاه‌ها."
+      },
+      "fr": {
+        "name": "Jeu",
+        "description": "Glossaire de jeu, contenant des traductions en français de termes connexes tels que les types de jeu, le gameplay et les appareils."
+      },
+      "he": {
+        "name": "משחק",
+        "description": "מילון מונחי משחק, המכיל תרגומים לעברית של מונחים קשורים כגון סוגי משחקים, משחקיות ומכשירים."
+      },
+      "hi": {
+        "name": "खेल",
+        "description": "खेल शब्दावली, जिसमें खेल के प्रकार, गेमप्ले और उपकरणों जैसे संबंधित शब्दों का हिंदी अनुवाद शामिल है।"
+      },
+      "hu": {
+        "name": "Játék",
+        "description": "Játék terminológiai tár, amely a játéktípusokkal, játékmenettel és eszközökkel kapcsolatos magyar fordításokat tartalmazza."
+      },
+      "it": {
+        "name": "Gioco",
+        "description": "Glossario di Gioco, contenente traduzioni in italiano di termini correlati come tipi di gioco, gameplay e dispositivi."
+      },
+      "ru": {
+        "name": "Игра",
+        "description": "Игровой глоссарий, содержащий переводы на русский язык связанных терминов, таких как типы игр, игровой процесс и устройства."
+      },
+      "ko": {
+        "name": "게임",
+        "description": "게임 용어집, 게임 유형, 게임 플레이, 장치 등 관련 용어의 한국어 번역 포함."
+      },
+      "pt-PT": {
+        "name": "Jogo",
+        "description": "Glossário de Jogo, contendo traduções em português de termos relacionados, como tipos de jogo, jogabilidade e dispositivos."
+      },
+      "pt-BR": {
+        "name": "Jogo",
+        "description": "Glossário de Jogos, contendo traduções em português brasileiro de termos relacionados, como tipos de jogo, jogabilidade e dispositivos."
+      },
+      "tr": {
+        "name": "Oyun",
+        "description": "Oyun terimleri sözlüğü, oyun türleri, oynanış ve cihazlar gibi ilgili terimlerin Türkçe çevirilerini içerir."
+      }
+    },
+    "langsHash": {
+      "auto": "707eaaa6504a32c77416cff277638949094ea48234a3f0443fba8486e7a8052b",
+      "zh-CN": "a5c44e8aa19d2e621156fc8db308d2d4875c3b82fcb682145b3f4981cdd11d8e",
+      "zh-TW": "30bd8b2708108c58e19d70e20dc95d37dc731d960c048ec58b785ee2b7079ed2"
+    }
+  },
+  {
+    "id": "golf",
+    "name": "Golf Expert",
+    "description": "Specialized in translating golf-related content, ensuring accurate and idiomatic translations for golf terms, equipment, rules, and golf-related content.",
+    "author": "immersive",
+    "glossary": "golf",
+    "langs": [
+      "zh-CN",
+      "zh-TW"
+    ],
+    "i18ns": {
+      "zh-CN": {
+        "name": "高尔夫",
+        "description": "高尔夫术语库，包含高尔夫装备、规则和比赛相关术语的中文翻译。"
+      },
+      "zh-TW": {
+        "name": "高爾夫",
+        "description": "高爾夫術語庫，包含高爾夫裝備、規則和比賽相關術語的繁體中文翻譯。"
+      },
+      "en": {
+        "name": "Golf Expert",
+        "description": "Specialized in translating golf-related content, ensuring accurate and idiomatic translations for golf terms, equipment, rules, and golf-related content."
+      }
+    },
+    "langsHash": {
+      "zh-CN": "383b8133b8b3a9e1f358a239fe8907c52a593a5afd1ef85b8e7c8e6c9f7d0851",
+      "zh-TW": "4c7061e1aaa87522d758f0383b335d21b46a46dd308957f99be96a2ee86c80c7"
+    }
+  },
+  {
+    "id": "movie",
+    "name": "Movie",
+    "description": "电影术语库，包含电影类型、制作、放映等相关术语的中文翻译。",
+    "author": "immersive",
+    "glossary": "movie",
+    "langs": [
+      "zh-CN",
+      "zh-TW"
+    ],
+    "i18ns": {
+      "zh-CN": {
+        "name": "电影",
+        "description": "电影术语库，包含电影类型、制作、放映等相关术语的中文翻译。"
+      },
+      "zh-TW": {
+        "name": "電影",
+        "description": "電影術語庫，包含電影類型、製作、放映等相關術語的中文翻譯。"
+      },
+      "en": {
+        "name": "Movie",
+        "description": "Movie glossary, containing Chinese translations of related terms such as movie types, production, and screening."
+      }
+    },
+    "langsHash": {
+      "zh-CN": "eb0406359e252ac696bfc2c4ae83fe5703e085db37ba7258c138e4c6082f7971",
+      "zh-TW": "d1945faf8a79172b254add6de7aa02290d2c92f7adfbf1e7c744363bf37c5a19"
+    }
+  },
+  {
+    "id": "photography",
+    "name": "Photography",
+    "description": "摄影术语库，包含相机、镜头、拍摄等相关术语的中文翻译。",
+    "author": "immersive",
+    "glossary": "photography",
+    "langs": [
+      "zh-CN",
+      "zh-TW"
+    ],
+    "i18ns": {
+      "zh-CN": {
+        "name": "摄影",
+        "description": "摄影术语库，包含相机、镜头、拍摄等相关术语的中文翻译。"
+      },
+      "zh-TW": {
+        "name": "攝影",
+        "description": "攝影術語庫，包含相機、鏡頭、拍攝等相關術語的中文翻譯。"
+      },
+      "en": {
+        "name": "Photography",
+        "description": "Photography glossary, containing Chinese translations of related terms such as cameras, lenses, and photography."
+      }
+    },
+    "langsHash": {
+      "zh-CN": "c296dd642415805707d31ca5a0517da121bd86f8c74a07e6a762573a349d8ad5",
+      "zh-TW": "704a7e32ea66ac510f468e263daec43977186fbdb794ee258b640870c0192158"
+    }
+  },
+  {
+    "id": "stellar-blade-clothing",
+    "name": "Stellar Blade Costumes",
+    "description": "Official Chinese translations for Stellar Blade game costumes",
+    "author": "MaMihLaPiNaTaPaI0",
+    "glossary": "stellar-blade-clothing",
+    "langs": [
+      "zh-CN"
+    ],
+    "i18ns": {
+      "zh-CN": {
+        "name": "《剑星》服装术语库",
+        "description": "包含125个游戏服装名称的中英对照翻译"
+      }
+    },
+    "langsHash": {
+      "zh-CN": "06ddfdcbd3c2e51829560560f84b00c783f9984c4c24e977c1276810220e721d"
+    }
+  },
+  {
+    "id": "Vocaloid",
+    "name": "Vocaloid",
+    "description": "Japanese to Chinese Vocaloid terminology database, containing Chinese translations of some Japanese Vocaloid, producer names, virtual singer names, and other related Vocaloid terms that cannot or are not accurately translated.",
+    "author": "人造石",
+    "glossary": "Vocaloid",
+    "langs": [
+      "zh-CN"
+    ],
+    "i18ns": {
+      "zh-CN": {
+        "name": "Vocaloid",
+        "description": "日文到中文的 Vocaloid 术语库，收录部分无法翻译或翻译不准确的日语 Vocaloid、P主名称、虚拟歌姬名字等 Vocaloid 相关术语的中文翻译。"
+      }
+    },
+    "langsHash": {
+      "zh-CN": "cf56653153ca2ab7c440343d3f64fe7747300736fc37ddb332f68a006ecfcb76"
+    }
+  },
+  {
+    "id": "access-control",
+    "name": "access-control",
+    "description": "访问控制术语库，包含与访问控制（计算机科学领域）相关的术语的中文翻译。",
+    "author": "Ziv",
+    "glossary": "access-control",
+    "langs": [
+      "zh-CN"
+    ],
+    "i18ns": {
+      "zh-CN": {
+        "name": "访问控制",
+        "description": "访问控制术语库，包含与访问控制（计算机科学领域）相关的术语的中文翻译。"
+      },
+      "en": {
+        "name": "Access Control",
+        "description": "Access Control glossary, containing Chinese translations of terms related to access control (in the field of computer science)."
+      }
+    },
+    "langsHash": {
+      "zh-CN": "4884da75bbe2087529611963af84c4b475052bba244aa876e6aa747cf5892eae"
+    }
+  },
+  {
+    "id": "hd2",
+    "name": "Helldivers 2",
+    "description": "Chinese translations for Helldivers 2 game terms",
+    "author": "TWSFFTS_07007",
+    "glossary": "hd2",
+    "langs": [
+      "zh-CN"
+    ],
+    "i18ns": {
+      "zh-CN": {
+        "name": "《绝地潜兵 2》",
+        "description": "包含游戏内大多数专有名词的翻译。"
+      }
+    },
+    "langsHash": {
+      "zh-CN": "c8413e6ef850f900024444fe590850d79290c91f600cbd58722d274aed7b74be"
+    }
+  }
+]

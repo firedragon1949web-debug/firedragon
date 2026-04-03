@@ -1,0 +1,25 @@
+/* Force all nav containers to display horizontally on English pages */
+.nav-container { 
+    writing-mode: horizontal-tb !important; 
+    letter-spacing: normal !important; 
+    line-height:1; 
+    display:inline-block; 
+}
+
+.nav-container.txt-large { 
+    writing-mode: horizontal-tb !important; 
+    direction: ltr !important;
+}
+
+.nav-container.active { 
+    writing-mode: horizontal-tb !important; 
+}
+
+.banner-title-container { 
+    writing-mode: horizontal-tb !important; 
+}
+
+.landing-nav-container .nav-container { 
+    writing-mode: horizontal-tb !important; 
+    direction: ltr !important;
+}

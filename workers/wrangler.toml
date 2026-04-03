@@ -1,0 +1,12 @@
+name = "firedragon-members-api"
+main = "src/index.js"
+compatibility_date = "2026-04-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "firedragon_members"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+
+[vars]
+ALLOWED_ORIGIN = "https://www.firedragon.org.hk"
+SESSION_DAYS = "7"

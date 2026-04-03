@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>会员登记后台</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #f4f6f8; color: #222; }
+    .wrap { max-width: 1200px; margin: 24px auto; padding: 0 16px; }
+    .box { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+    h1, h2 { margin: 0 0 12px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    input, button { padding: 10px; border-radius: 8px; border: 1px solid #ccc; }
+    button { cursor: pointer; border: 0; background: #111827; color: #fff; font-weight: 700; }
+    button.danger { background: #b42318; }
+    .msg { margin-top: 8px; min-height: 20px; font-size: 14px; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { border: 1px solid #e5e7eb; padding: 8px; text-align: left; vertical-align: top; }
+    th { background: #f9fafb; }
+    .toolbar { display: flex; gap: 10px; align-items: center; margin: 10px 0; }
+    .hidden { display: none; }
+    @media (max-width: 900px) { .row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>会员登记后台</h1>
+
+    <div id="loginBox" class="box">
+      <h2>管理员登录</h2>
+      <div class="row">
+        <input id="username" placeholder="账号" />
+        <input id="password" type="password" placeholder="密码" />
+      </div>
+      <div style="margin-top:10px;">
+        <button id="loginBtn">登录</button>
+      </div>
+      <div id="loginMsg" class="msg"></div>
+    </div>
+
+    <div id="adminBox" class="box hidden">
+      <div class="toolbar">
+        <input id="searchInput" placeholder="搜索姓名/邮箱/电话/VIP" style="flex:1;" />
+        <button id="refreshBtn">刷新</button>
+        <button id="logoutBtn">退出登录</button>
+      </div>
+      <div style="overflow:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>姓名</th>
+              <th>邮箱</th>
+              <th>国家/地区</th>
+              <th>电话</th>
+              <th>VIP号码</th>
+              <th>时间戳</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+      <div id="adminMsg" class="msg"></div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var loginBox = document.getElementById("loginBox");
+      var adminBox = document.getElementById("adminBox");
+      var loginMsg = document.getElementById("loginMsg");
+      var adminMsg = document.getElementById("adminMsg");
+      var tableBody = document.getElementById("tableBody");
+      var searchInput = document.getElementById("searchInput");
+      var rows = [];
+
+      function setMsg(ele, text, ok) {
+        ele.textContent = text;
+        ele.style.color = ok ? "#0f7a34" : "#b42318";
+      }
+
+      function renderTable(list) {
+        tableBody.innerHTML = "";
+        list.forEach(function (item) {
+          var tr = document.createElement("tr");
+          tr.innerHTML =
+            "<td>" + item.id + "</td>" +
+            "<td>" + item.name + "</td>" +
+            "<td>" + item.email + "</td>" +
+            "<td>" + item.country_region + "</td>" +
+            "<td>" + item.phone_country_code + " " + item.phone_number + "</td>" +
+            "<td>" + (item.vip_number || "-") + "</td>" +
+            "<td>" + item.created_at + "</td>" +
+            "<td><button data-id='" + item.id + "' class='danger delBtn'>删除</button></td>";
+          tableBody.appendChild(tr);
+        });
+        bindDeleteButtons();
+      }
+
+      function bindDeleteButtons() {
+        var buttons = document.querySelectorAll(".delBtn");
+        for (var i = 0; i < buttons.length; i++) {
+          buttons[i].addEventListener("click", async function () {
+            var id = this.getAttribute("data-id");
+            if (!confirm("确认删除 ID " + id + " ?")) return;
+            try {
+              var resp = await fetch("/api/admin/registrations/" + id, { method: "DELETE", credentials: "include" });
+              var data = await resp.json();
+              if (!resp.ok) throw new Error(data.error || "删除失败");
+              setMsg(adminMsg, "删除成功", true);
+              await loadData();
+            } catch (err) {
+              setMsg(adminMsg, err.message || "删除失败", false);
+            }
+          });
+        }
+      }
+
+      async function loadData() {
+        var resp = await fetch("/api/admin/registrations", { credentials: "include" });
+        if (resp.status === 401) {
+          loginBox.classList.remove("hidden");
+          adminBox.classList.add("hidden");
+          return;
+        }
+        var data = await resp.json();
+        if (!resp.ok) throw new Error(data.error || "加载失败");
+        rows = data.items || [];
+        renderTable(rows);
+      }
+
+      document.getElementById("loginBtn").addEventListener("click", async function () {
+        var username = document.getElementById("username").value.trim();
+        var password = document.getElementById("password").value;
+        if (!username || !password) {
+          setMsg(loginMsg, "请输入账号和密码。", false);
+          return;
+        }
+        try {
+          var resp = await fetch("/api/admin/login", {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username: username, password: password })
+          });
+          var data = await resp.json();
+          if (!resp.ok) throw new Error(data.error || "登录失败");
+          setMsg(loginMsg, "登录成功", true);
+          loginBox.classList.add("hidden");
+          adminBox.classList.remove("hidden");
+          await loadData();
+        } catch (err) {
+          setMsg(loginMsg, err.message || "登录失败", false);
+        }
+      });
+
+      document.getElementById("refreshBtn").addEventListener("click", function () {
+        loadData().catch(function (err) { setMsg(adminMsg, err.message || "加载失败", false); });
+      });
+
+      document.getElementById("logoutBtn").addEventListener("click", async function () {
+        await fetch("/api/admin/logout", { method: "POST", credentials: "include" });
+        loginBox.classList.remove("hidden");
+        adminBox.classList.add("hidden");
+        setMsg(loginMsg, "已退出登录", true);
+      });
+
+      searchInput.addEventListener("input", function () {
+        var q = this.value.trim().toLowerCase();
+        var filtered = rows.filter(function (x) {
+          return (x.name || "").toLowerCase().indexOf(q) >= 0 ||
+                 (x.email || "").toLowerCase().indexOf(q) >= 0 ||
+                 ((x.phone_country_code || "") + " " + (x.phone_number || "")).toLowerCase().indexOf(q) >= 0 ||
+                 (x.vip_number || "").toLowerCase().indexOf(q) >= 0;
+        });
+        renderTable(filtered);
+      });
+
+      loadData().then(function () {
+        loginBox.classList.add("hidden");
+        adminBox.classList.remove("hidden");
+      }).catch(function () {});
+    })();
+  </script>
+</body>
+</html>

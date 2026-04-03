@@ -1,0 +1,22 @@
+# Dependencies
+workers/node_modules/
+
+# Cloudflare Wrangler local
+workers/.wrangler/
+
+# OS / editor
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Secrets (never commit)
+.env
+.env.*
+*.pem
+
+# Local Claude / IDE
+.claude/
