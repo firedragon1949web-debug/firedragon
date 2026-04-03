@@ -87,10 +87,9 @@ function validateRegistration(payload) {
   return null;
 }
 
-export default {
-  async fetch(request, env) {
-    const url = new URL(request.url);
-    const c = getCorsHeaders(request, env);
+async function handleApi(request, env) {
+  const url = new URL(request.url);
+  const c = getCorsHeaders(request, env);
     if (!c) {
       if (request.method === "OPTIONS") {
         return new Response(null, { status: 403 });
@@ -224,5 +223,20 @@ export default {
     } catch (err) {
       return json({ error: err && err.message ? err.message : "服务器错误" }, 500, c);
     }
+}
+
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+    if (url.pathname.startsWith("/api")) {
+      return handleApi(request, env);
+    }
+    if (url.pathname === "/admin" && request.method === "GET") {
+      return Response.redirect(new URL("/admin.html", request.url).href, 302);
+    }
+    if (env.ASSETS) {
+      return env.ASSETS.fetch(request);
+    }
+    return new Response("Not Found", { status: 404 });
   }
 };
