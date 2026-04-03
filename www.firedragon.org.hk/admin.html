@@ -21,6 +21,9 @@
     .hidden { display: none; }
     @media (max-width: 900px) { .row { grid-template-columns: 1fr; } }
   </style>
+  <script>
+    window.MEMBER_API_BASE = "https://testbackend.milcefarmer-19f.workers.dev";
+  </script>
 </head>
 <body>
   <div class="wrap">
@@ -67,6 +70,13 @@
 
   <script>
     (function () {
+      // 部署时可改成你的 Worker 地址，例如：
+      // var API_BASE = "https://testbackend.milcefarmer-19f.workers.dev";
+      var API_BASE = window.MEMBER_API_BASE || "";
+      function apiUrl(path) {
+        return (API_BASE ? API_BASE.replace(/\/$/, "") : "") + path;
+      }
+
       var loginBox = document.getElementById("loginBox");
       var adminBox = document.getElementById("adminBox");
       var loginMsg = document.getElementById("loginMsg");
@@ -117,7 +127,7 @@
             var id = this.getAttribute("data-id");
             if (!confirm("确认删除 ID " + id + " ?")) return;
             try {
-              var resp = await fetch("/api/admin/registrations/" + id, { method: "DELETE", credentials: "include" });
+              var resp = await fetch(apiUrl("/api/admin/registrations/" + id), { method: "DELETE", credentials: "include" });
               var data = await parseResponseJson(resp);
               if (!resp.ok) throw new Error(data.error || "删除失败");
               setMsg(adminMsg, "删除成功", true);
@@ -130,7 +140,7 @@
       }
 
       async function loadData() {
-        var resp = await fetch("/api/admin/registrations", { credentials: "include" });
+        var resp = await fetch(apiUrl("/api/admin/registrations"), { credentials: "include" });
         if (resp.status === 401) {
           loginBox.classList.remove("hidden");
           adminBox.classList.add("hidden");
@@ -152,7 +162,7 @@
           return;
         }
         try {
-          var resp = await fetch("/api/admin/login", {
+          var resp = await fetch(apiUrl("/api/admin/login"), {
             method: "POST",
             credentials: "include",
             headers: { "Content-Type": "application/json" },
@@ -176,7 +186,7 @@
 
       document.getElementById("logoutBtn").addEventListener("click", async function () {
         try {
-          var resp = await fetch("/api/admin/logout", { method: "POST", credentials: "include" });
+          var resp = await fetch(apiUrl("/api/admin/logout"), { method: "POST", credentials: "include" });
           await parseResponseJson(resp);
         } catch (e) {}
         loginBox.classList.remove("hidden");
