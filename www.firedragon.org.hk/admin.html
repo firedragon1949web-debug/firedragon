@@ -7,8 +7,16 @@
   <style>
     body { margin: 0; font-family: Arial, sans-serif; background: #f4f6f8; color: #222; }
     .wrap { max-width: 1200px; margin: 24px auto; padding: 0 16px; }
+    .title-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 8px; }
+    .lang-group { display: flex; gap: 4px; }
+    .lang-btn {
+      padding: 6px 12px; border-radius: 8px; border: 1px solid #ccc; background: #fff;
+      font-size: 13px; cursor: pointer; color: #333;
+    }
+    .lang-btn.active { background: #111827; color: #fff; border-color: #111827; font-weight: 700; }
     .box { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
     h1, h2 { margin: 0 0 12px; }
+    h1 { flex: 1; }
     h3 { margin: 0 0 12px; font-size: 18px; }
     .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     input, button, select { padding: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
@@ -44,23 +52,29 @@
 </head>
 <body>
   <div class="wrap">
-    <h1>会员登记后台</h1>
+    <div class="title-row">
+      <h1 id="pageHeading">会员登记后台</h1>
+      <div class="lang-group">
+        <button type="button" class="lang-btn" id="langZh" aria-pressed="true">中文</button>
+        <button type="button" class="lang-btn" id="langEn" aria-pressed="false">English</button>
+      </div>
+    </div>
 
     <div id="loginBox" class="box">
-      <h2>管理员登录</h2>
+      <h2 id="loginTitle">管理员登录</h2>
       <div class="row">
-        <input id="username" placeholder="账号" />
-        <input id="password" type="password" placeholder="密码" />
+        <input id="username" type="text" />
+        <input id="password" type="password" />
       </div>
       <div style="margin-top:10px;">
-        <button id="loginBtn">登录</button>
+        <button id="loginBtn" type="button">登录</button>
       </div>
       <div id="loginMsg" class="msg"></div>
     </div>
 
     <div id="adminBox" class="box hidden">
       <div class="toolbar">
-        <input id="searchInput" placeholder="搜索姓名/邮箱/电话/VIP" type="text" />
+        <input id="searchInput" type="text" />
         <button type="button" id="exportCsvBtn">导出 CSV</button>
         <button type="button" id="refreshBtn">刷新</button>
         <button type="button" id="logoutBtn">退出登录</button>
@@ -69,14 +83,14 @@
         <table>
           <thead>
             <tr>
-              <th>ID</th>
-              <th>姓名</th>
-              <th>邮箱</th>
-              <th>国家/地区</th>
-              <th>电话</th>
-              <th>VIP号码</th>
-              <th>时间戳</th>
-              <th>操作</th>
+              <th id="thId">ID</th>
+              <th id="thName">姓名</th>
+              <th id="thEmail">邮箱</th>
+              <th id="thCountry">国家/地区</th>
+              <th id="thPhone">电话</th>
+              <th id="thVip">VIP号码</th>
+              <th id="thCreated">时间戳</th>
+              <th id="thActions">操作</th>
             </tr>
           </thead>
           <tbody id="tableBody"></tbody>
@@ -90,17 +104,17 @@
     <div class="modal" role="dialog" aria-labelledby="editTitle">
       <h3 id="editTitle">编辑记录</h3>
       <input type="hidden" id="editId" />
-      <label for="editName">姓名</label>
+      <label for="editName" id="labEditName">姓名</label>
       <input id="editName" type="text" maxlength="80" />
-      <label for="editEmail">邮箱</label>
+      <label for="editEmail" id="labEditEmail">邮箱</label>
       <input id="editEmail" type="email" maxlength="120" />
-      <label for="editCountry">国家/地区</label>
+      <label for="editCountry" id="labEditCountry">国家/地区</label>
       <input id="editCountry" type="text" maxlength="80" />
-      <label for="editPhoneCode">电话区号</label>
-      <input id="editPhoneCode" type="text" maxlength="20" placeholder="如 +86" />
-      <label for="editPhoneNum">电话号码</label>
+      <label for="editPhoneCode" id="labEditPhoneCode">电话区号</label>
+      <input id="editPhoneCode" type="text" maxlength="20" />
+      <label for="editPhoneNum" id="labEditPhoneNum">电话号码</label>
       <input id="editPhoneNum" type="text" maxlength="30" />
-      <label for="editVip">VIP号码（可空）</label>
+      <label for="editVip" id="labEditVip">VIP号码（可空）</label>
       <input id="editVip" type="text" maxlength="50" />
       <div class="modal-actions">
         <button type="button" class="ghost" id="editCancel">取消</button>
@@ -111,6 +125,152 @@
 
   <script>
     (function () {
+      var STORAGE_KEY = "firedragon_ui_lang";
+
+      var STR = {
+        zh: {
+          pageTitle: "会员登记后台",
+          pageHeading: "会员登记后台",
+          loginTitle: "管理员登录",
+          phUsername: "账号",
+          phPassword: "密码",
+          loginBtn: "登录",
+          searchPlaceholder: "搜索姓名/邮箱/电话/VIP",
+          exportCsv: "导出 CSV",
+          refresh: "刷新",
+          logout: "退出登录",
+          thId: "ID",
+          thName: "姓名",
+          thEmail: "邮箱",
+          thCountry: "国家/地区",
+          thPhone: "电话",
+          thVip: "VIP号码",
+          thCreated: "时间戳",
+          thActions: "操作",
+          editTitle: "编辑记录",
+          labEditName: "姓名",
+          labEditEmail: "邮箱",
+          labEditCountry: "国家/地区",
+          labEditPhoneCode: "电话区号",
+          labEditPhoneCodePh: "如 +86",
+          labEditPhoneNum: "电话号码",
+          labEditVip: "VIP号码（可空）",
+          cancel: "取消",
+          save: "保存",
+          edit: "编辑",
+          delete: "删除",
+          confirmDelete: "确认删除 ID {id} ?",
+          deleteOk: "删除成功",
+          deleteFail: "删除失败",
+          loadFail: "加载失败",
+          loginNeed: "请输入账号和密码。",
+          loginOk: "登录成功",
+          loginFail: "登录失败",
+          exportEmpty: "当前没有可导出的数据。",
+          exportDone: "已导出 {n} 条记录。",
+          logoutOk: "已退出登录",
+          saveFields: "请填写完整必填字段。",
+          saveOk: "保存成功",
+          saveFail: "保存失败",
+          errEmpty:
+            "服务器返回空内容（HTTP {status}）。请求地址：{url}。若状态为 404：说明请求没有打到本仓库的 Worker（常见原因：wrangler.toml 里 name 与控制台 Worker 名不一致，或部署到了别的子域）。请用浏览器打开「同一域名」下的 /api/health ，应看到 JSON；若也为 404，请在本机进入 workers 目录执行 npm run deploy 后重试（配置在仓库根 wrangler.toml）。",
+          errBadJson: "服务器返回非 JSON（HTTP {status}）：{snippet}"
+        },
+        en: {
+          pageTitle: "Member admin",
+          pageHeading: "Member admin",
+          loginTitle: "Admin sign-in",
+          phUsername: "Username",
+          phPassword: "Password",
+          loginBtn: "Sign in",
+          searchPlaceholder: "Search name / email / phone / VIP",
+          exportCsv: "Export CSV",
+          refresh: "Refresh",
+          logout: "Log out",
+          thId: "ID",
+          thName: "Name",
+          thEmail: "Email",
+          thCountry: "Country/region",
+          thPhone: "Phone",
+          thVip: "VIP",
+          thCreated: "Created at",
+          thActions: "Actions",
+          editTitle: "Edit record",
+          labEditName: "Full name",
+          labEditEmail: "Email",
+          labEditCountry: "Country / region",
+          labEditPhoneCode: "Phone country code",
+          labEditPhoneCodePh: "e.g. +86",
+          labEditPhoneNum: "Phone number",
+          labEditVip: "VIP number (optional)",
+          cancel: "Cancel",
+          save: "Save",
+          edit: "Edit",
+          delete: "Delete",
+          confirmDelete: "Delete record ID {id}?",
+          deleteOk: "Deleted.",
+          deleteFail: "Delete failed.",
+          loadFail: "Failed to load.",
+          loginNeed: "Please enter username and password.",
+          loginOk: "Signed in.",
+          loginFail: "Sign-in failed.",
+          exportEmpty: "Nothing to export.",
+          exportDone: "Exported {n} row(s).",
+          logoutOk: "Signed out.",
+          saveFields: "Please fill in all required fields.",
+          saveOk: "Saved.",
+          saveFail: "Save failed.",
+          errEmpty:
+            "Empty response (HTTP {status}). URL: {url}. If this is 404, the request may not be reaching this Worker—open /api/health on the same origin; redeploy with the root wrangler.toml if needed.",
+          errBadJson: "Non-JSON response (HTTP {status}): {snippet}"
+        }
+      };
+
+      var SERVER_ERR_ZH_TO_EN = {
+        "该邮箱已被其他记录使用": "This email is already used by another record.",
+        "未登录": "Not signed in.",
+        "未授权": "Unauthorized.",
+        "账号或密码错误": "Invalid username or password.",
+        "账号或密码不能为空": "Username and password are required.",
+        "无效ID": "Invalid ID.",
+        "缺少字段: name": "Missing field: name",
+        "缺少字段: email": "Missing field: email",
+        "缺少字段: country_region": "Missing field: country/region",
+        "缺少字段: phone_country_code": "Missing field: phone country code",
+        "缺少字段: phone_number": "Missing field: phone number",
+        "邮箱格式不正确": "Invalid email format."
+      };
+
+      function detectLang() {
+        var s = localStorage.getItem(STORAGE_KEY);
+        if (s === "zh" || s === "en") return s;
+        var nav = (navigator.language || "").toLowerCase();
+        return nav.indexOf("zh") === 0 ? "zh" : "en";
+      }
+
+      var lang = detectLang();
+
+      function t(key) {
+        var bundle = STR[lang] || STR.zh;
+        return bundle[key] || STR.zh[key] || key;
+      }
+
+      function tpl(str, map) {
+        var out = str;
+        for (var k in map) {
+          if (Object.prototype.hasOwnProperty.call(map, k)) {
+            out = out.split("{" + k + "}").join(map[k]);
+          }
+        }
+        return out;
+      }
+
+      function mapServerMessage(msg) {
+        if (!msg || lang === "zh") return msg;
+        var m = String(msg);
+        return SERVER_ERR_ZH_TO_EN[m] || m;
+      }
+
       var API_BASE = window.MEMBER_API_BASE;
       if (API_BASE === undefined || API_BASE === null || String(API_BASE).trim() === "") {
         if (/\.workers\.dev$/i.test(window.location.hostname)) {
@@ -143,6 +303,52 @@
       var editPhoneNum = document.getElementById("editPhoneNum");
       var editVip = document.getElementById("editVip");
 
+      function setLang(next) {
+        lang = next === "en" ? "en" : "zh";
+        localStorage.setItem(STORAGE_KEY, lang);
+        document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+        document.getElementById("langZh").classList.toggle("active", lang === "zh");
+        document.getElementById("langEn").classList.toggle("active", lang === "en");
+        document.getElementById("langZh").setAttribute("aria-pressed", lang === "zh" ? "true" : "false");
+        document.getElementById("langEn").setAttribute("aria-pressed", lang === "en" ? "true" : "false");
+        applyStaticI18n();
+        searchInput.dispatchEvent(new Event("input"));
+      }
+
+      function applyStaticI18n() {
+        document.title = t("pageTitle");
+        document.getElementById("pageHeading").textContent = t("pageHeading");
+        document.getElementById("loginTitle").textContent = t("loginTitle");
+        document.getElementById("username").placeholder = t("phUsername");
+        document.getElementById("password").placeholder = t("phPassword");
+        document.getElementById("loginBtn").textContent = t("loginBtn");
+        searchInput.placeholder = t("searchPlaceholder");
+        document.getElementById("exportCsvBtn").textContent = t("exportCsv");
+        document.getElementById("refreshBtn").textContent = t("refresh");
+        document.getElementById("logoutBtn").textContent = t("logout");
+        document.getElementById("thId").textContent = t("thId");
+        document.getElementById("thName").textContent = t("thName");
+        document.getElementById("thEmail").textContent = t("thEmail");
+        document.getElementById("thCountry").textContent = t("thCountry");
+        document.getElementById("thPhone").textContent = t("thPhone");
+        document.getElementById("thVip").textContent = t("thVip");
+        document.getElementById("thCreated").textContent = t("thCreated");
+        document.getElementById("thActions").textContent = t("thActions");
+        document.getElementById("editTitle").textContent = t("editTitle");
+        document.getElementById("labEditName").textContent = t("labEditName");
+        document.getElementById("labEditEmail").textContent = t("labEditEmail");
+        document.getElementById("labEditCountry").textContent = t("labEditCountry");
+        document.getElementById("labEditPhoneCode").textContent = t("labEditPhoneCode");
+        editPhoneCode.placeholder = t("labEditPhoneCodePh");
+        document.getElementById("labEditPhoneNum").textContent = t("labEditPhoneNum");
+        document.getElementById("labEditVip").textContent = t("labEditVip");
+        document.getElementById("editCancel").textContent = t("cancel");
+        document.getElementById("editSave").textContent = t("save");
+      }
+
+      document.getElementById("langZh").addEventListener("click", function () { setLang("zh"); });
+      document.getElementById("langEn").addEventListener("click", function () { setLang("en"); });
+
       function setMsg(ele, text, ok) {
         ele.textContent = text;
         ele.style.color = ok ? "#0f7a34" : "#b42318";
@@ -153,18 +359,16 @@
         if (!raw) {
           return {
             __empty: true,
-            error:
-              "服务器返回空内容（HTTP " +
-              resp.status +
-              "）。请求地址：" +
-              (triedUrl || "") +
-              "。若状态为 404：说明请求没有打到本仓库的 Worker（常见原因：wrangler.toml 里 name 与控制台 Worker 名不一致，或部署到了别的子域）。请用浏览器打开「同一域名」下的 /api/health ，应看到 JSON；若也为 404，请在本机进入 workers 目录执行 npm run deploy 后重试（配置在仓库根 wrangler.toml）。"
+            error: tpl(t("errEmpty"), { status: String(resp.status), url: triedUrl || "" })
           };
         }
         try {
           return JSON.parse(raw);
         } catch (e) {
-          return { __badJson: true, error: "服务器返回非 JSON（HTTP " + resp.status + "）：" + raw.slice(0, 120) };
+          return {
+            __badJson: true,
+            error: tpl(t("errBadJson"), { status: String(resp.status), snippet: raw.slice(0, 120) })
+          };
         }
       }
 
@@ -239,8 +443,8 @@
             "<td>" + (item.vip_number || "-") + "</td>" +
             "<td>" + item.created_at + "</td>" +
             "<td class='ops'>" +
-            "<button type='button' data-id='" + item.id + "' class='secondary editBtn'>编辑</button> " +
-            "<button type='button' data-id='" + item.id + "' class='danger delBtn'>删除</button>" +
+            "<button type='button' data-id='" + item.id + "' class='secondary editBtn'>" + t("edit") + "</button> " +
+            "<button type='button' data-id='" + item.id + "' class='danger delBtn'>" + t("delete") + "</button>" +
             "</td>";
           tableBody.appendChild(tr);
         });
@@ -258,16 +462,16 @@
         for (var j = 0; j < delBtns.length; j++) {
           delBtns[j].addEventListener("click", async function () {
             var id = this.getAttribute("data-id");
-            if (!confirm("确认删除 ID " + id + " ?")) return;
+            if (!confirm(tpl(t("confirmDelete"), { id: id }))) return;
             try {
               var delUrl = apiUrl("/api/admin/registrations/" + id);
               var resp = await fetch(delUrl, { method: "DELETE", credentials: "include" });
               var data = await parseResponseJson(resp, delUrl);
-              if (!resp.ok) throw new Error(data.error || "删除失败");
-              setMsg(adminMsg, "删除成功", true);
+              if (!resp.ok) throw new Error(mapServerMessage(data.error) || t("deleteFail"));
+              setMsg(adminMsg, t("deleteOk"), true);
               await loadData();
             } catch (err) {
-              setMsg(adminMsg, err.message || "删除失败", false);
+              setMsg(adminMsg, err.message || t("deleteFail"), false);
             }
           });
         }
@@ -282,8 +486,8 @@
           return false;
         }
         var data = await parseResponseJson(resp, listUrl);
-        if (data.__empty || data.__badJson) throw new Error(data.error || "加载失败");
-        if (!resp.ok) throw new Error(data.error || "加载失败");
+        if (data.__empty || data.__badJson) throw new Error(mapServerMessage(data.error) || t("loadFail"));
+        if (!resp.ok) throw new Error(mapServerMessage(data.error) || t("loadFail"));
         rows = data.items || [];
         var q = searchInput.value.trim().toLowerCase();
         var filtered = q
@@ -304,7 +508,7 @@
         var username = document.getElementById("username").value.trim();
         var password = document.getElementById("password").value;
         if (!username || !password) {
-          setMsg(loginMsg, "请输入账号和密码。", false);
+          setMsg(loginMsg, t("loginNeed"), false);
           return;
         }
         try {
@@ -316,30 +520,30 @@
             body: JSON.stringify({ username: username, password: password })
           });
           var data = await parseResponseJson(resp, loginUrl);
-          if (data.__empty || data.__badJson) throw new Error(data.error || "登录失败");
-          if (!resp.ok) throw new Error(data.error || "登录失败");
-          setMsg(loginMsg, "登录成功", true);
+          if (data.__empty || data.__badJson) throw new Error(mapServerMessage(data.error) || t("loginFail"));
+          if (!resp.ok) throw new Error(mapServerMessage(data.error) || t("loginFail"));
+          setMsg(loginMsg, t("loginOk"), true);
           loginBox.classList.add("hidden");
           adminBox.classList.remove("hidden");
           await loadData();
         } catch (err) {
-          setMsg(loginMsg, err.message || "登录失败", false);
+          setMsg(loginMsg, err.message || t("loginFail"), false);
         }
       });
 
       document.getElementById("refreshBtn").addEventListener("click", function () {
         loadData().catch(function (err) {
-          setMsg(adminMsg, err.message || "加载失败", false);
+          setMsg(adminMsg, err.message || t("loadFail"), false);
         });
       });
 
       document.getElementById("exportCsvBtn").addEventListener("click", function () {
         if (!displayedRows.length) {
-          setMsg(adminMsg, "当前没有可导出的数据。", false);
+          setMsg(adminMsg, t("exportEmpty"), false);
           return;
         }
         exportCsv(displayedRows);
-        setMsg(adminMsg, "已导出 " + displayedRows.length + " 条记录。", true);
+        setMsg(adminMsg, tpl(t("exportDone"), { n: String(displayedRows.length) }), true);
       });
 
       document.getElementById("logoutBtn").addEventListener("click", async function () {
@@ -350,7 +554,7 @@
         } catch (e) {}
         loginBox.classList.remove("hidden");
         adminBox.classList.add("hidden");
-        setMsg(loginMsg, "已退出登录", true);
+        setMsg(loginMsg, t("logoutOk"), true);
       });
 
       document.getElementById("editCancel").addEventListener("click", closeEditModal);
@@ -370,7 +574,7 @@
           vip_number: editVip.value.trim() || null
         };
         if (!payload.name || !payload.email || !payload.country_region || !payload.phone_country_code || !payload.phone_number) {
-          setMsg(adminMsg, "请填写完整必填字段。", false);
+          setMsg(adminMsg, t("saveFields"), false);
           return;
         }
         try {
@@ -382,12 +586,12 @@
             body: JSON.stringify(payload)
           });
           var data = await parseResponseJson(resp, putUrl);
-          if (!resp.ok) throw new Error(data.error || "保存失败");
+          if (!resp.ok) throw new Error(mapServerMessage(data.error) || t("saveFail"));
           closeEditModal();
-          setMsg(adminMsg, "保存成功", true);
+          setMsg(adminMsg, t("saveOk"), true);
           await loadData();
         } catch (err) {
-          setMsg(adminMsg, err.message || "保存失败", false);
+          setMsg(adminMsg, err.message || t("saveFail"), false);
         }
       });
 
@@ -403,6 +607,8 @@
         });
         renderTable(filtered);
       });
+
+      setLang(lang);
 
       loadData()
         .then(function (ok) {
