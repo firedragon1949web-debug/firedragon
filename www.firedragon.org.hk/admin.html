@@ -80,6 +80,18 @@
         ele.style.color = ok ? "#0f7a34" : "#b42318";
       }
 
+      async function parseResponseJson(resp) {
+        var raw = await resp.text();
+        if (!raw) {
+          return { __empty: true, error: "服务器返回空内容（HTTP " + resp.status + "），请检查 Worker 是否已部署、D1 是否绑定。" };
+        }
+        try {
+          return JSON.parse(raw);
+        } catch (e) {
+          return { __badJson: true, error: "服务器返回非 JSON（HTTP " + resp.status + "）：" + raw.slice(0, 120) };
+        }
+      }
+
       function renderTable(list) {
         tableBody.innerHTML = "";
         list.forEach(function (item) {
@@ -106,7 +118,7 @@
             if (!confirm("确认删除 ID " + id + " ?")) return;
             try {
               var resp = await fetch("/api/admin/registrations/" + id, { method: "DELETE", credentials: "include" });
-              var data = await resp.json();
+              var data = await parseResponseJson(resp);
               if (!resp.ok) throw new Error(data.error || "删除失败");
               setMsg(adminMsg, "删除成功", true);
               await loadData();
@@ -122,12 +134,14 @@
         if (resp.status === 401) {
           loginBox.classList.remove("hidden");
           adminBox.classList.add("hidden");
-          return;
+          return false;
         }
-        var data = await resp.json();
+        var data = await parseResponseJson(resp);
+        if (data.__empty || data.__badJson) throw new Error(data.error || "加载失败");
         if (!resp.ok) throw new Error(data.error || "加载失败");
         rows = data.items || [];
         renderTable(rows);
+        return true;
       }
 
       document.getElementById("loginBtn").addEventListener("click", async function () {
@@ -144,7 +158,8 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username: username, password: password })
           });
-          var data = await resp.json();
+          var data = await parseResponseJson(resp);
+          if (data.__empty || data.__badJson) throw new Error(data.error || "登录失败");
           if (!resp.ok) throw new Error(data.error || "登录失败");
           setMsg(loginMsg, "登录成功", true);
           loginBox.classList.add("hidden");
@@ -160,7 +175,10 @@
       });
 
       document.getElementById("logoutBtn").addEventListener("click", async function () {
-        await fetch("/api/admin/logout", { method: "POST", credentials: "include" });
+        try {
+          var resp = await fetch("/api/admin/logout", { method: "POST", credentials: "include" });
+          await parseResponseJson(resp);
+        } catch (e) {}
         loginBox.classList.remove("hidden");
         adminBox.classList.add("hidden");
         setMsg(loginMsg, "已退出登录", true);
@@ -177,9 +195,11 @@
         renderTable(filtered);
       });
 
-      loadData().then(function () {
-        loginBox.classList.add("hidden");
-        adminBox.classList.remove("hidden");
+      loadData().then(function (ok) {
+        if (ok) {
+          loginBox.classList.add("hidden");
+          adminBox.classList.remove("hidden");
+        }
       }).catch(function () {});
     })();
   </script>
