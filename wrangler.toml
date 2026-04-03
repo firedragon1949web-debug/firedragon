@@ -18,3 +18,5 @@ database_id = "9361d626-8314-4df2-a8ee-04c73dc54c6c"
 # 逗号分隔多个前端域名。同一 Worker 子域名（*.workers.dev）已在代码里自动放行，可不写。
 ALLOWED_ORIGINS = "https://www.firedragon.org.hk"
 SESSION_DAYS = "7"
+# 可选：公开登记条数软上限。未设置、空字符串或 "0" 表示不启用；正整数则 COUNT(*) 达到该值后 POST 返回 507。
+MAX_REGISTRATIONS = "0"

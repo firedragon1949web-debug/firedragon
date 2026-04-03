@@ -87,6 +87,18 @@ function validateRegistration(payload) {
   return null;
 }
 
+/** D1/SQLite 写入失败时判断是否按「容量不足」向用户展示 */
+function isStorageCapacityError(message) {
+  const m = String(message || "").toLowerCase();
+  if (!m) return false;
+  if (m.includes("database is full") || m.includes("database or disk is full")) return true;
+  if (m.includes("sqlite_full") || m.includes("sql_full")) return true;
+  if (m.includes("disk full") || m.includes("no space left")) return true;
+  if (m.includes("quota") && (m.includes("exceed") || m.includes("limit"))) return true;
+  if (m.includes("storage") && (m.includes("limit") || m.includes("exceed"))) return true;
+  return false;
+}
+
 async function handleApi(request, env) {
   const url = new URL(request.url);
   const c = getCorsHeaders(request, env);
@@ -112,18 +124,47 @@ async function handleApi(request, env) {
         const err = validateRegistration(body);
         if (err) return json({ error: err }, 400, c);
 
-        await env.DB.prepare(
-          `INSERT INTO registrations
-          (name, email, country_region, phone_country_code, phone_number, vip_number)
-          VALUES (?1, ?2, ?3, ?4, ?5, ?6)`
-        ).bind(
-          String(body.name).trim(),
-          String(body.email).trim(),
-          String(body.country_region).trim(),
-          String(body.phone_country_code).trim(),
-          String(body.phone_number).trim(),
-          body.vip_number ? String(body.vip_number).trim() : null
-        ).run();
+        const emailTrim = String(body.email).trim();
+        const maxReg = parseInt(String(env.MAX_REGISTRATIONS || "0").trim(), 10);
+        if (maxReg > 0) {
+          const cntRow = await env.DB.prepare("SELECT COUNT(*) AS n FROM registrations").first();
+          const n = cntRow && cntRow.n != null ? Number(cntRow.n) : 0;
+          if (n >= maxReg) {
+            return json({ error: "数据库容量不足，请稍后再试或联系管理员" }, 507, c);
+          }
+        }
+
+        const dup = await env.DB.prepare(
+          `SELECT 1 AS x FROM registrations WHERE lower(trim(email)) = lower(trim(?1)) LIMIT 1`
+        )
+          .bind(emailTrim)
+          .first();
+        if (dup) {
+          return json({ error: "该邮箱已登记过" }, 409, c);
+        }
+
+        try {
+          await env.DB.prepare(
+            `INSERT INTO registrations
+            (name, email, country_region, phone_country_code, phone_number, vip_number)
+            VALUES (?1, ?2, ?3, ?4, ?5, ?6)`
+          )
+            .bind(
+              String(body.name).trim(),
+              emailTrim,
+              String(body.country_region).trim(),
+              String(body.phone_country_code).trim(),
+              String(body.phone_number).trim(),
+              body.vip_number ? String(body.vip_number).trim() : null
+            )
+            .run();
+        } catch (dbErr) {
+          const msg = dbErr && dbErr.message ? String(dbErr.message) : "";
+          if (isStorageCapacityError(msg)) {
+            return json({ error: "数据库容量不足，请稍后再试或联系管理员" }, 507, c);
+          }
+          throw dbErr;
+        }
 
         return json({ ok: true }, 201, c);
       }
@@ -202,13 +243,22 @@ async function handleApi(request, env) {
           const body = await request.json();
           const err = validateRegistration(body);
           if (err) return json({ error: err }, 400, c);
+          const emailTrim = String(body.email).trim();
+          const other = await env.DB.prepare(
+            `SELECT id FROM registrations WHERE lower(trim(email)) = lower(trim(?1)) AND id != ?2 LIMIT 1`
+          )
+            .bind(emailTrim, id)
+            .first();
+          if (other) {
+            return json({ error: "该邮箱已被其他记录使用" }, 409, c);
+          }
           await env.DB.prepare(
             `UPDATE registrations
              SET name=?1, email=?2, country_region=?3, phone_country_code=?4, phone_number=?5, vip_number=?6
              WHERE id=?7`
           ).bind(
             String(body.name).trim(),
-            String(body.email).trim(),
+            emailTrim,
             String(body.country_region).trim(),
             String(body.phone_country_code).trim(),
             String(body.phone_number).trim(),

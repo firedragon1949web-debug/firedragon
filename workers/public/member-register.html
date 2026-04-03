@@ -151,8 +151,14 @@
           }
 
           if (!resp.ok) {
-            var backendMsg = data && data.error ? data.error : "";
-            throw new Error(backendMsg || ("提交失败（HTTP " + resp.status + "）。后端可能未部署或接口地址未接通。"));
+            var backendMsg = data && data.error ? String(data.error) : "";
+            if (!backendMsg) {
+              if (resp.status === 409) backendMsg = "该邮箱已登记过";
+              else if (resp.status === 507) backendMsg = "数据库容量不足，请稍后再试或联系管理员";
+            }
+            throw new Error(
+              backendMsg || "提交失败（HTTP " + resp.status + "）。后端可能未部署或接口地址未接通。"
+            );
           }
 
           setMsg("提交成功，感谢登记。", true);

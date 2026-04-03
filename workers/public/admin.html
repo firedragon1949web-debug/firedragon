@@ -9,16 +9,33 @@
     .wrap { max-width: 1200px; margin: 24px auto; padding: 0 16px; }
     .box { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
     h1, h2 { margin: 0 0 12px; }
+    h3 { margin: 0 0 12px; font-size: 18px; }
     .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    input, button { padding: 10px; border-radius: 8px; border: 1px solid #ccc; }
+    input, button, select { padding: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
     button { cursor: pointer; border: 0; background: #111827; color: #fff; font-weight: 700; }
     button.danger { background: #b42318; }
+    button.secondary { background: #374151; }
+    button.ghost { background: #e5e7eb; color: #111827; }
     .msg { margin-top: 8px; min-height: 20px; font-size: 14px; }
     table { width: 100%; border-collapse: collapse; font-size: 14px; }
     th, td { border: 1px solid #e5e7eb; padding: 8px; text-align: left; vertical-align: top; }
     th { background: #f9fafb; }
-    .toolbar { display: flex; gap: 10px; align-items: center; margin: 10px 0; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 10px 0; }
+    .toolbar input[type="text"] { flex: 1; min-width: 160px; }
     .hidden { display: none; }
+    .ops { display: flex; flex-wrap: wrap; gap: 6px; }
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,.45); display: flex; align-items: center; justify-content: center;
+      padding: 16px; z-index: 1000;
+    }
+    .modal-backdrop.hidden { display: none; }
+    .modal {
+      background: #fff; border-radius: 12px; padding: 20px; max-width: 520px; width: 100%; max-height: 90vh; overflow: auto;
+      border: 1px solid #e5e7eb; box-shadow: 0 12px 40px rgba(0,0,0,.12);
+    }
+    .modal label { display: block; font-weight: 700; margin: 10px 0 4px; font-size: 13px; }
+    .modal input, .modal select { width: 100%; }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
     @media (max-width: 900px) { .row { grid-template-columns: 1fr; } }
   </style>
   <script>
@@ -43,9 +60,10 @@
 
     <div id="adminBox" class="box hidden">
       <div class="toolbar">
-        <input id="searchInput" placeholder="搜索姓名/邮箱/电话/VIP" style="flex:1;" />
-        <button id="refreshBtn">刷新</button>
-        <button id="logoutBtn">退出登录</button>
+        <input id="searchInput" placeholder="搜索姓名/邮箱/电话/VIP" type="text" />
+        <button type="button" id="exportCsvBtn">导出 CSV</button>
+        <button type="button" id="refreshBtn">刷新</button>
+        <button type="button" id="logoutBtn">退出登录</button>
       </div>
       <div style="overflow:auto;">
         <table>
@@ -68,9 +86,31 @@
     </div>
   </div>
 
+  <div id="editBackdrop" class="modal-backdrop hidden" aria-hidden="true">
+    <div class="modal" role="dialog" aria-labelledby="editTitle">
+      <h3 id="editTitle">编辑记录</h3>
+      <input type="hidden" id="editId" />
+      <label for="editName">姓名</label>
+      <input id="editName" type="text" maxlength="80" />
+      <label for="editEmail">邮箱</label>
+      <input id="editEmail" type="email" maxlength="120" />
+      <label for="editCountry">国家/地区</label>
+      <input id="editCountry" type="text" maxlength="80" />
+      <label for="editPhoneCode">电话区号</label>
+      <input id="editPhoneCode" type="text" maxlength="20" placeholder="如 +86" />
+      <label for="editPhoneNum">电话号码</label>
+      <input id="editPhoneNum" type="text" maxlength="30" />
+      <label for="editVip">VIP号码（可空）</label>
+      <input id="editVip" type="text" maxlength="50" />
+      <div class="modal-actions">
+        <button type="button" class="ghost" id="editCancel">取消</button>
+        <button type="button" id="editSave">保存</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     (function () {
-      // 未配置时：若页面在 *.workers.dev 上，默认用当前域名（与 API 同 Worker）
       var API_BASE = window.MEMBER_API_BASE;
       if (API_BASE === undefined || API_BASE === null || String(API_BASE).trim() === "") {
         if (/\.workers\.dev$/i.test(window.location.hostname)) {
@@ -92,6 +132,16 @@
       var tableBody = document.getElementById("tableBody");
       var searchInput = document.getElementById("searchInput");
       var rows = [];
+      var displayedRows = [];
+
+      var editBackdrop = document.getElementById("editBackdrop");
+      var editId = document.getElementById("editId");
+      var editName = document.getElementById("editName");
+      var editEmail = document.getElementById("editEmail");
+      var editCountry = document.getElementById("editCountry");
+      var editPhoneCode = document.getElementById("editPhoneCode");
+      var editPhoneNum = document.getElementById("editPhoneNum");
+      var editVip = document.getElementById("editVip");
 
       function setMsg(ele, text, ok) {
         ele.textContent = text;
@@ -118,7 +168,65 @@
         }
       }
 
+      function escapeCsvCell(val) {
+        var s = val == null ? "" : String(val);
+        if (/[",\r\n]/.test(s)) {
+          return '"' + s.replace(/"/g, '""') + '"';
+        }
+        return s;
+      }
+
+      function exportCsv(list) {
+        var headers = ["id", "name", "email", "country_region", "phone_country_code", "phone_number", "vip_number", "created_at"];
+        var lines = [headers.join(",")];
+        for (var i = 0; i < list.length; i++) {
+          var r = list[i];
+          var row = [];
+          for (var j = 0; j < headers.length; j++) {
+            row.push(escapeCsvCell(r[headers[j]]));
+          }
+          lines.push(row.join(","));
+        }
+        var bom = "\uFEFF";
+        var blob = new Blob([bom + lines.join("\r\n")], { type: "text/csv;charset=utf-8" });
+        var a = document.createElement("a");
+        var d = new Date();
+        var ds = d.getFullYear() + "-" + (d.getMonth() + 101 + "").slice(1) + "-" + (d.getDate() + 100 + "").slice(1);
+        a.href = URL.createObjectURL(blob);
+        a.download = "registrations-" + ds + ".csv";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(a.href);
+      }
+
+      function openEditModal(id) {
+        var item = null;
+        for (var i = 0; i < rows.length; i++) {
+          if (Number(rows[i].id) === Number(id)) {
+            item = rows[i];
+            break;
+          }
+        }
+        if (!item) return;
+        editId.value = String(item.id);
+        editName.value = item.name || "";
+        editEmail.value = item.email || "";
+        editCountry.value = item.country_region || "";
+        editPhoneCode.value = item.phone_country_code || "";
+        editPhoneNum.value = item.phone_number || "";
+        editVip.value = item.vip_number || "";
+        editBackdrop.classList.remove("hidden");
+        editBackdrop.setAttribute("aria-hidden", "false");
+      }
+
+      function closeEditModal() {
+        editBackdrop.classList.add("hidden");
+        editBackdrop.setAttribute("aria-hidden", "true");
+      }
+
       function renderTable(list) {
+        displayedRows = list;
         tableBody.innerHTML = "";
         list.forEach(function (item) {
           var tr = document.createElement("tr");
@@ -130,16 +238,25 @@
             "<td>" + item.phone_country_code + " " + item.phone_number + "</td>" +
             "<td>" + (item.vip_number || "-") + "</td>" +
             "<td>" + item.created_at + "</td>" +
-            "<td><button data-id='" + item.id + "' class='danger delBtn'>删除</button></td>";
+            "<td class='ops'>" +
+            "<button type='button' data-id='" + item.id + "' class='secondary editBtn'>编辑</button> " +
+            "<button type='button' data-id='" + item.id + "' class='danger delBtn'>删除</button>" +
+            "</td>";
           tableBody.appendChild(tr);
         });
-        bindDeleteButtons();
+        bindRowButtons();
       }
 
-      function bindDeleteButtons() {
-        var buttons = document.querySelectorAll(".delBtn");
-        for (var i = 0; i < buttons.length; i++) {
-          buttons[i].addEventListener("click", async function () {
+      function bindRowButtons() {
+        var editBtns = document.querySelectorAll(".editBtn");
+        for (var i = 0; i < editBtns.length; i++) {
+          editBtns[i].addEventListener("click", function () {
+            openEditModal(this.getAttribute("data-id"));
+          });
+        }
+        var delBtns = document.querySelectorAll(".delBtn");
+        for (var j = 0; j < delBtns.length; j++) {
+          delBtns[j].addEventListener("click", async function () {
             var id = this.getAttribute("data-id");
             if (!confirm("确认删除 ID " + id + " ?")) return;
             try {
@@ -168,7 +285,18 @@
         if (data.__empty || data.__badJson) throw new Error(data.error || "加载失败");
         if (!resp.ok) throw new Error(data.error || "加载失败");
         rows = data.items || [];
-        renderTable(rows);
+        var q = searchInput.value.trim().toLowerCase();
+        var filtered = q
+          ? rows.filter(function (x) {
+              return (
+                (x.name || "").toLowerCase().indexOf(q) >= 0 ||
+                (x.email || "").toLowerCase().indexOf(q) >= 0 ||
+                ((x.phone_country_code || "") + " " + (x.phone_number || "")).toLowerCase().indexOf(q) >= 0 ||
+                (x.vip_number || "").toLowerCase().indexOf(q) >= 0
+              );
+            })
+          : rows;
+        renderTable(filtered);
         return true;
       }
 
@@ -200,7 +328,18 @@
       });
 
       document.getElementById("refreshBtn").addEventListener("click", function () {
-        loadData().catch(function (err) { setMsg(adminMsg, err.message || "加载失败", false); });
+        loadData().catch(function (err) {
+          setMsg(adminMsg, err.message || "加载失败", false);
+        });
+      });
+
+      document.getElementById("exportCsvBtn").addEventListener("click", function () {
+        if (!displayedRows.length) {
+          setMsg(adminMsg, "当前没有可导出的数据。", false);
+          return;
+        }
+        exportCsv(displayedRows);
+        setMsg(adminMsg, "已导出 " + displayedRows.length + " 条记录。", true);
       });
 
       document.getElementById("logoutBtn").addEventListener("click", async function () {
@@ -214,23 +353,65 @@
         setMsg(loginMsg, "已退出登录", true);
       });
 
+      document.getElementById("editCancel").addEventListener("click", closeEditModal);
+      editBackdrop.addEventListener("click", function (e) {
+        if (e.target === editBackdrop) closeEditModal();
+      });
+
+      document.getElementById("editSave").addEventListener("click", async function () {
+        var id = editId.value.trim();
+        if (!id) return;
+        var payload = {
+          name: editName.value.trim(),
+          email: editEmail.value.trim(),
+          country_region: editCountry.value.trim(),
+          phone_country_code: editPhoneCode.value.trim(),
+          phone_number: editPhoneNum.value.trim(),
+          vip_number: editVip.value.trim() || null
+        };
+        if (!payload.name || !payload.email || !payload.country_region || !payload.phone_country_code || !payload.phone_number) {
+          setMsg(adminMsg, "请填写完整必填字段。", false);
+          return;
+        }
+        try {
+          var putUrl = apiUrl("/api/admin/registrations/" + id);
+          var resp = await fetch(putUrl, {
+            method: "PUT",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+          var data = await parseResponseJson(resp, putUrl);
+          if (!resp.ok) throw new Error(data.error || "保存失败");
+          closeEditModal();
+          setMsg(adminMsg, "保存成功", true);
+          await loadData();
+        } catch (err) {
+          setMsg(adminMsg, err.message || "保存失败", false);
+        }
+      });
+
       searchInput.addEventListener("input", function () {
         var q = this.value.trim().toLowerCase();
         var filtered = rows.filter(function (x) {
-          return (x.name || "").toLowerCase().indexOf(q) >= 0 ||
-                 (x.email || "").toLowerCase().indexOf(q) >= 0 ||
-                 ((x.phone_country_code || "") + " " + (x.phone_number || "")).toLowerCase().indexOf(q) >= 0 ||
-                 (x.vip_number || "").toLowerCase().indexOf(q) >= 0;
+          return (
+            (x.name || "").toLowerCase().indexOf(q) >= 0 ||
+            (x.email || "").toLowerCase().indexOf(q) >= 0 ||
+            ((x.phone_country_code || "") + " " + (x.phone_number || "")).toLowerCase().indexOf(q) >= 0 ||
+            (x.vip_number || "").toLowerCase().indexOf(q) >= 0
+          );
         });
         renderTable(filtered);
       });
 
-      loadData().then(function (ok) {
-        if (ok) {
-          loginBox.classList.add("hidden");
-          adminBox.classList.remove("hidden");
-        }
-      }).catch(function () {});
+      loadData()
+        .then(function (ok) {
+          if (ok) {
+            loginBox.classList.add("hidden");
+            adminBox.classList.remove("hidden");
+          }
+        })
+        .catch(function () {});
     })();
   </script>
 </body>

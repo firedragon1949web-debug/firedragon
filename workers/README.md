@@ -90,6 +90,16 @@ npm run deploy
 5. **管理后台跨域登录**  
    管理页与 API 不同域名时，会话 Cookie 已使用 `SameSite=None; Secure`，请全程使用 **HTTPS**。
 
+## 登记与容量（`POST /api/registrations`）
+
+- **邮箱去重**：忽略大小写与首尾空格，若已存在相同邮箱则返回 **409**，JSON `error` 为「该邮箱已登记过」。
+- **软上限**：在仓库根 `wrangler.toml` 的 `[vars]` 中设置 `MAX_REGISTRATIONS` 为正整数；当前条数 `COUNT(*) >=` 该值时返回 **507**，提示容量不足。未设置、`""` 或 `"0"` 表示不限制。
+- **硬错误兜底**：插入时若 D1/SQLite 报磁盘满等错误，会映射为同一套容量不足文案（**507**），避免把内部错误信息直接暴露给用户。
+
+## 后台 CSV 导出
+
+`admin.html` 工具栏提供「导出 CSV」：导出**当前表格中展示的数据**（与搜索过滤一致），列为 `id,name,email,country_region,phone_country_code,phone_number,vip_number,created_at`，UTF-8 带 BOM，便于 Excel 打开。
+
 ## API 路由
 
 - `POST /api/registrations` 公开登记
