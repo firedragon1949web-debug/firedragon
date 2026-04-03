@@ -104,6 +104,10 @@ export default {
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: c });
 
     try {
+      if (url.pathname === "/api/health" && request.method === "GET") {
+        return json({ ok: true, service: "firedragon-members-api", time: new Date().toISOString() }, 200, c);
+      }
+
       if (url.pathname === "/api/registrations" && request.method === "POST") {
         const body = await request.json();
         const err = validateRegistration(body);
