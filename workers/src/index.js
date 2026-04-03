@@ -8,14 +8,37 @@ function json(data, status = 200, extraHeaders = {}) {
   });
 }
 
-function corsHeaders(origin, env) {
-  const allowOrigin = env.ALLOWED_ORIGIN || origin || "*";
+/**
+ * 支持多个前端域名：在 wrangler 里配置 ALLOWED_ORIGINS（逗号分隔），
+ * 例如：https://www.firedragon.org.hk,https://xxx.github.io
+ * 仍兼容旧的单值 ALLOWED_ORIGIN。
+ */
+function getCorsHeaders(request, env) {
+  const origin = request.headers.get("Origin");
+  const selfOrigin = new URL(request.url).origin;
+  const raw = (env.ALLOWED_ORIGINS || env.ALLOWED_ORIGIN || "").trim();
+  const list = raw.split(",").map((s) => s.trim()).filter(Boolean);
+
+  // 管理页 / 登记页若直接部署在同一 Worker 域名下，浏览器会带 Origin=本域名；
+  // 若未把 *.workers.dev 写进 ALLOWED_ORIGINS，预检 OPTIONS 会 403 空响应，导致登录失败。
+  let allowOrigin;
+  if (origin && origin === selfOrigin) {
+    allowOrigin = origin;
+  } else if (!list.length) {
+    allowOrigin = origin || "*";
+  } else if (!origin) {
+    allowOrigin = list[0];
+  } else if (list.includes(origin)) {
+    allowOrigin = origin;
+  } else {
+    return null;
+  }
   return {
     "Access-Control-Allow-Origin": allowOrigin,
     "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, Authorization",
     "Access-Control-Allow-Credentials": "true",
-    "Vary": "Origin"
+    Vary: "Origin"
   };
 }
 
@@ -67,8 +90,16 @@ function validateRegistration(payload) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
-    const origin = request.headers.get("Origin");
-    const c = corsHeaders(origin, env);
+    const c = getCorsHeaders(request, env);
+    if (!c) {
+      if (request.method === "OPTIONS") {
+        return new Response(null, { status: 403 });
+      }
+      return new Response(JSON.stringify({ error: "CORS: 前端域名未加入 Worker 的 ALLOWED_ORIGINS" }), {
+        status: 403,
+        headers: { "Content-Type": "application/json; charset=utf-8" }
+      });
+    }
 
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: c });
 
@@ -115,12 +146,13 @@ export default {
           "INSERT INTO admin_sessions (admin_id, token_hash, expires_at) VALUES (?1, ?2, ?3)"
         ).bind(admin.id, tokenHash, expires).run();
 
+        // 管理页在 GitHub Pages、官网等不同域名时，需 SameSite=None 才能跨站带 Cookie
         return json(
           { ok: true, username: admin.username },
           200,
           {
             ...c,
-            "Set-Cookie": `admin_session=${encodeURIComponent(token)}; HttpOnly; Secure; Path=/; SameSite=Lax; Max-Age=${sessionDays * 24 * 60 * 60}`
+            "Set-Cookie": `admin_session=${encodeURIComponent(token)}; HttpOnly; Secure; Path=/; SameSite=None; Max-Age=${sessionDays * 24 * 60 * 60}`
           }
         );
       }
@@ -132,7 +164,7 @@ export default {
           const tokenHash = await sha256Hex(token);
           await env.DB.prepare("DELETE FROM admin_sessions WHERE token_hash = ?1").bind(tokenHash).run();
         }
-        return json({ ok: true }, 200, { ...c, "Set-Cookie": "admin_session=; HttpOnly; Secure; Path=/; SameSite=Lax; Max-Age=0" });
+        return json({ ok: true }, 200, { ...c, "Set-Cookie": "admin_session=; HttpOnly; Secure; Path=/; SameSite=None; Max-Age=0" });
       }
 
       if (url.pathname === "/api/admin/me" && request.method === "GET") {
