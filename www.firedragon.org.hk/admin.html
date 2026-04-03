@@ -70,11 +70,19 @@
 
   <script>
     (function () {
-      // 部署时可改成你的 Worker 地址，例如：
-      // var API_BASE = "https://testbackend.milcefarmer-19f.workers.dev";
-      var API_BASE = window.MEMBER_API_BASE || "";
+      // 未配置时：若页面在 *.workers.dev 上，默认用当前域名（与 API 同 Worker）
+      var API_BASE = window.MEMBER_API_BASE;
+      if (API_BASE === undefined || API_BASE === null || String(API_BASE).trim() === "") {
+        if (/\.workers\.dev$/i.test(window.location.hostname)) {
+          API_BASE = window.location.origin;
+        } else {
+          API_BASE = "";
+        }
+      } else {
+        API_BASE = String(API_BASE).trim().replace(/\/$/, "");
+      }
       function apiUrl(path) {
-        return (API_BASE ? API_BASE.replace(/\/$/, "") : "") + path;
+        return (API_BASE ? API_BASE : "") + path;
       }
 
       var loginBox = document.getElementById("loginBox");
@@ -90,10 +98,18 @@
         ele.style.color = ok ? "#0f7a34" : "#b42318";
       }
 
-      async function parseResponseJson(resp) {
+      async function parseResponseJson(resp, triedUrl) {
         var raw = await resp.text();
         if (!raw) {
-          return { __empty: true, error: "服务器返回空内容（HTTP " + resp.status + "），请检查 Worker 是否已部署、D1 是否绑定。" };
+          return {
+            __empty: true,
+            error:
+              "服务器返回空内容（HTTP " +
+              resp.status +
+              "）。请求地址：" +
+              (triedUrl || "") +
+              "。若状态为 404：说明请求没有打到本仓库的 Worker（常见原因：wrangler.toml 里 name 与控制台 Worker 名不一致，或部署到了别的子域）。请用浏览器打开「同一域名」下的 /api/health ，应看到 JSON；若也为 404，请在本机 workers 目录执行 wrangler deploy --name testbackend 后重试。"
+          };
         }
         try {
           return JSON.parse(raw);
@@ -127,8 +143,9 @@
             var id = this.getAttribute("data-id");
             if (!confirm("确认删除 ID " + id + " ?")) return;
             try {
-              var resp = await fetch(apiUrl("/api/admin/registrations/" + id), { method: "DELETE", credentials: "include" });
-              var data = await parseResponseJson(resp);
+              var delUrl = apiUrl("/api/admin/registrations/" + id);
+              var resp = await fetch(delUrl, { method: "DELETE", credentials: "include" });
+              var data = await parseResponseJson(resp, delUrl);
               if (!resp.ok) throw new Error(data.error || "删除失败");
               setMsg(adminMsg, "删除成功", true);
               await loadData();
@@ -140,13 +157,14 @@
       }
 
       async function loadData() {
-        var resp = await fetch(apiUrl("/api/admin/registrations"), { credentials: "include" });
+        var listUrl = apiUrl("/api/admin/registrations");
+        var resp = await fetch(listUrl, { credentials: "include" });
         if (resp.status === 401) {
           loginBox.classList.remove("hidden");
           adminBox.classList.add("hidden");
           return false;
         }
-        var data = await parseResponseJson(resp);
+        var data = await parseResponseJson(resp, listUrl);
         if (data.__empty || data.__badJson) throw new Error(data.error || "加载失败");
         if (!resp.ok) throw new Error(data.error || "加载失败");
         rows = data.items || [];
@@ -162,13 +180,14 @@
           return;
         }
         try {
-          var resp = await fetch(apiUrl("/api/admin/login"), {
+          var loginUrl = apiUrl("/api/admin/login");
+          var resp = await fetch(loginUrl, {
             method: "POST",
             credentials: "include",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username: username, password: password })
           });
-          var data = await parseResponseJson(resp);
+          var data = await parseResponseJson(resp, loginUrl);
           if (data.__empty || data.__badJson) throw new Error(data.error || "登录失败");
           if (!resp.ok) throw new Error(data.error || "登录失败");
           setMsg(loginMsg, "登录成功", true);
@@ -186,8 +205,9 @@
 
       document.getElementById("logoutBtn").addEventListener("click", async function () {
         try {
-          var resp = await fetch(apiUrl("/api/admin/logout"), { method: "POST", credentials: "include" });
-          await parseResponseJson(resp);
+          var outUrl = apiUrl("/api/admin/logout");
+          var resp = await fetch(outUrl, { method: "POST", credentials: "include" });
+          await parseResponseJson(resp, outUrl);
         } catch (e) {}
         loginBox.classList.remove("hidden");
         adminBox.classList.add("hidden");
