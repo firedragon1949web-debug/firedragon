@@ -22,6 +22,13 @@
     .qr { width: 280px; max-width: 100%; border: 1px solid #ddd; border-radius: 8px; padding: 8px; background: #fff; }
     .line { margin: 10px 0; font-size: 14px; word-break: break-all; }
     label { display: block; font-weight: 700; margin: 12px 0 6px; }
+    .req-star {
+      color: #d92d20;
+      font-weight: 700;
+      font-size: 0.92em;
+      margin-right: 4px;
+      vertical-align: 0.05em;
+    }
     input, select { width: 100%; box-sizing: border-box; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 14px; }
     .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     button[type="submit"] { margin-top: 14px; width: 100%; padding: 12px; border: 0; border-radius: 8px; background: #e63278; color: #fff; font-weight: 700; cursor: pointer; }
@@ -55,23 +62,23 @@
       <div class="card">
         <h2 id="formTitle">登記資料</h2>
         <form id="registerForm">
-          <label for="name" id="labelName">姓名</label>
+          <label for="name"><span class="req-star" aria-hidden="true">*</span><span id="labelName">姓名</span></label>
           <input id="name" name="name" type="text" maxlength="80" required />
 
-          <label for="email" id="labelEmail">電郵</label>
+          <label for="email"><span class="req-star" aria-hidden="true">*</span><span id="labelEmail">電郵</span></label>
           <input id="email" name="email" type="email" maxlength="120" required />
 
-          <label for="countryRegion" id="labelCountry">國家／地區</label>
+          <label for="countryRegion"><span class="req-star" aria-hidden="true">*</span><span id="labelCountry">國家／地區</span></label>
           <select id="countryRegion" name="country_region" required></select>
 
-          <label id="labelPhone">電話</label>
+          <label><span class="req-star" aria-hidden="true">*</span><span id="labelPhone">電話</span></label>
           <div class="row">
             <select id="phoneCountryCode" name="phone_country_code" required></select>
             <input id="phoneNumber" name="phone_number" type="tel" maxlength="30" required />
           </div>
 
-          <label for="vipNumber" id="labelVip">VIP 號碼（可選）</label>
-          <input id="vipNumber" name="vip_number" type="text" maxlength="50" />
+          <label for="vipNumber" id="labelVip">VIP 號碼（可選，可留空）</label>
+          <input id="vipNumber" name="vip_number" type="text" maxlength="50" autocomplete="off" />
 
           <button type="submit" id="submitBtn">提交登記</button>
           <div id="formMsg" class="msg" aria-live="polite"></div>
@@ -112,7 +119,8 @@
           labelEmail: "電郵",
           labelCountry: "國家／地區",
           labelPhone: "電話",
-          labelVip: "VIP 號碼（可選）",
+          labelVip: "VIP 號碼（可選，可留空）",
+          vipPlaceholder: "可留空",
           submitBtn: "提交登記",
           countryPlaceholder: "請選擇",
           phoneCodePlaceholder: "區號",
@@ -137,7 +145,8 @@
           labelEmail: "Email",
           labelCountry: "Country / region",
           labelPhone: "Phone",
-          labelVip: "VIP number (optional)",
+          labelVip: "VIP number (optional — leave blank if none)",
+          vipPlaceholder: "Leave blank if none",
           submitBtn: "Submit",
           countryPlaceholder: "Please select",
           phoneCodePlaceholder: "Code",
@@ -174,8 +183,8 @@
       function detectLang() {
         var s = localStorage.getItem(STORAGE_KEY);
         if (s === "zh" || s === "en") return s;
-        var nav = (navigator.language || "").toLowerCase();
-        return nav.indexOf("zh") === 0 ? "zh" : "en";
+        // 香港站預設繁中
+        return "zh";
       }
 
       var lang = detectLang();
@@ -251,8 +260,18 @@
         document.getElementById("labelVip").textContent = t("labelVip");
         document.getElementById("submitBtn").textContent = t("submitBtn");
         document.getElementById("phoneNumber").placeholder = t("phonePlaceholder");
+        document.getElementById("vipNumber").placeholder = t("vipPlaceholder");
         fillCountrySelect();
         fillPhoneCodeSelect();
+      }
+
+      function normalizeVipInput(s) {
+        var v = (s || "").trim();
+        if (!v) return null;
+        if (v === "無" || v === "无") return null;
+        if (/^n\/?a$/i.test(v)) return null;
+        if (v === "-" || v === "—" || v === "–") return null;
+        return v;
       }
 
       document.getElementById("langZh").addEventListener("click", function () { setLang("zh"); });
@@ -290,7 +309,7 @@
           country_region: document.getElementById("countryRegion").value,
           phone_country_code: document.getElementById("phoneCountryCode").value,
           phone_number: document.getElementById("phoneNumber").value.trim(),
-          vip_number: document.getElementById("vipNumber").value.trim() || null
+          vip_number: normalizeVipInput(document.getElementById("vipNumber").value)
         };
 
         if (!payload.name || !payload.email || !payload.country_region || !payload.phone_country_code || !payload.phone_number) {
@@ -334,6 +353,7 @@
 
           setMsg(t("msgSuccess"), true);
           form.reset();
+          applyI18n();
         } catch (err) {
           setMsg(err.message || t("msgSubmitFail"), false);
         }
