@@ -579,6 +579,7 @@ ol li{ margin-bottom:0em; list-style-position:inside;  }
 	.expandable-body > div { left:3em;  }
 	.expandable-body > div { width:calc(100% - 3em);  }
 	.logo-container, .footer-logo-container{  width:12em; }
+	
 	.menu-icon-container > div{  height:2px;  }
 	.menu-icon-container > div:nth-child(2), .menu-icon-container > div:nth-child(3){ top:calc(50% - 1px) }
 	
