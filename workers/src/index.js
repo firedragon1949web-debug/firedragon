@@ -9,9 +9,9 @@ function json(data, status = 200, extraHeaders = {}) {
 }
 
 /**
- * 支持多个前端域名：在 wrangler 里配置 ALLOWED_ORIGINS（逗号分隔），
+ * 支援多個前端網域：在 wrangler 設定 ALLOWED_ORIGINS（逗號分隔），
  * 例如：https://www.firedragon.org.hk,https://xxx.github.io
- * 仍兼容旧的单值 ALLOWED_ORIGIN。
+ * 仍相容舊的單值 ALLOWED_ORIGIN。
  */
 function getCorsHeaders(request, env) {
   const origin = request.headers.get("Origin");
@@ -19,8 +19,8 @@ function getCorsHeaders(request, env) {
   const raw = (env.ALLOWED_ORIGINS || env.ALLOWED_ORIGIN || "").trim();
   const list = raw.split(",").map((s) => s.trim()).filter(Boolean);
 
-  // 管理页 / 登记页若直接部署在同一 Worker 域名下，浏览器会带 Origin=本域名；
-  // 若未把 *.workers.dev 写进 ALLOWED_ORIGINS，预检 OPTIONS 会 403 空响应，导致登录失败。
+  // 管理頁／登記頁若直接部署在同一 Worker 網域下，瀏覽器會帶 Origin=本網域；
+  // 若未把 *.workers.dev 寫入 ALLOWED_ORIGINS，預檢 OPTIONS 會 403 空回應，導致登入失敗。
   let allowOrigin;
   if (origin && origin === selfOrigin) {
     allowOrigin = origin;
@@ -81,13 +81,13 @@ async function requireAdmin(request, env) {
 function validateRegistration(payload) {
   const required = ["name", "email", "country_region", "phone_country_code", "phone_number"];
   for (const key of required) {
-    if (!payload[key] || String(payload[key]).trim() === "") return `缺少字段: ${key}`;
+    if (!payload[key] || String(payload[key]).trim() === "") return `缺少欄位：${key}`;
   }
-  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(payload.email))) return "邮箱格式不正确";
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(payload.email))) return "電郵格式不正確";
   return null;
 }
 
-/** D1/SQLite 写入失败时判断是否按「容量不足」向用户展示 */
+/** D1/SQLite 寫入失敗時，是否改以「容量不足」向使用者顯示 */
 function isStorageCapacityError(message) {
   const m = String(message || "").toLowerCase();
   if (!m) return false;
@@ -106,7 +106,7 @@ async function handleApi(request, env) {
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 403 });
     }
-    return new Response(JSON.stringify({ error: "CORS: 前端域名未加入 Worker 的 ALLOWED_ORIGINS" }), {
+    return new Response(JSON.stringify({ error: "CORS：前端網域未加入 Worker 的 ALLOWED_ORIGINS" }), {
       status: 403,
       headers: { "Content-Type": "application/json; charset=utf-8" }
     });
@@ -130,7 +130,7 @@ async function handleApi(request, env) {
           const cntRow = await env.DB.prepare("SELECT COUNT(*) AS n FROM registrations").first();
           const n = cntRow && cntRow.n != null ? Number(cntRow.n) : 0;
           if (n >= maxReg) {
-            return json({ error: "数据库容量不足，请稍后再试或联系管理员" }, 507, c);
+            return json({ error: "資料庫容量不足，請稍後再試或聯絡管理員" }, 507, c);
           }
         }
 
@@ -140,7 +140,7 @@ async function handleApi(request, env) {
           .bind(emailTrim)
           .first();
         if (dup) {
-          return json({ error: "该邮箱已登记过" }, 409, c);
+          return json({ error: "此電郵已登記過" }, 409, c);
         }
 
         try {
@@ -161,7 +161,7 @@ async function handleApi(request, env) {
         } catch (dbErr) {
           const msg = dbErr && dbErr.message ? String(dbErr.message) : "";
           if (isStorageCapacityError(msg)) {
-            return json({ error: "数据库容量不足，请稍后再试或联系管理员" }, 507, c);
+            return json({ error: "資料庫容量不足，請稍後再試或聯絡管理員" }, 507, c);
           }
           throw dbErr;
         }
@@ -173,14 +173,14 @@ async function handleApi(request, env) {
         const body = await request.json();
         const username = String(body.username || "").trim();
         const password = String(body.password || "");
-        if (!username || !password) return json({ error: "账号或密码不能为空" }, 400, c);
+        if (!username || !password) return json({ error: "帳號或密碼不可為空" }, 400, c);
 
         const admin = await env.DB.prepare("SELECT id, username, password_hash FROM admins WHERE username = ?1")
           .bind(username).first();
-        if (!admin) return json({ error: "账号或密码错误" }, 401, c);
+        if (!admin) return json({ error: "帳號或密碼錯誤" }, 401, c);
 
         const inputHash = await sha256Hex(password);
-        if (inputHash !== admin.password_hash) return json({ error: "账号或密码错误" }, 401, c);
+        if (inputHash !== admin.password_hash) return json({ error: "帳號或密碼錯誤" }, 401, c);
 
         const token = randomToken();
         const tokenHash = await sha256Hex(token);
@@ -190,7 +190,7 @@ async function handleApi(request, env) {
           "INSERT INTO admin_sessions (admin_id, token_hash, expires_at) VALUES (?1, ?2, ?3)"
         ).bind(admin.id, tokenHash, expires).run();
 
-        // 管理页在 GitHub Pages、官网等不同域名时，需 SameSite=None 才能跨站带 Cookie
+        // 管理頁在 GitHub Pages、官網等不同網域時，需 SameSite=None 才能跨站帶 Cookie
         return json(
           { ok: true, username: admin.username },
           200,
@@ -213,13 +213,13 @@ async function handleApi(request, env) {
 
       if (url.pathname === "/api/admin/me" && request.method === "GET") {
         const admin = await requireAdmin(request, env);
-        if (!admin) return json({ error: "未登录" }, 401, c);
+        if (!admin) return json({ error: "未登入" }, 401, c);
         return json({ ok: true, user: { id: admin.admin_id, username: admin.username } }, 200, c);
       }
 
       if (url.pathname === "/api/admin/registrations" && request.method === "GET") {
         const admin = await requireAdmin(request, env);
-        if (!admin) return json({ error: "未授权" }, 401, c);
+        if (!admin) return json({ error: "未授權" }, 401, c);
 
         const rs = await env.DB.prepare(
           `SELECT id, name, email, country_region, phone_country_code, phone_number, vip_number, created_at
@@ -230,9 +230,9 @@ async function handleApi(request, env) {
 
       if (url.pathname.startsWith("/api/admin/registrations/")) {
         const admin = await requireAdmin(request, env);
-        if (!admin) return json({ error: "未授权" }, 401, c);
+        if (!admin) return json({ error: "未授權" }, 401, c);
         const id = Number(url.pathname.split("/").pop());
-        if (!id) return json({ error: "无效ID" }, 400, c);
+        if (!id) return json({ error: "無效 ID" }, 400, c);
 
         if (request.method === "DELETE") {
           await env.DB.prepare("DELETE FROM registrations WHERE id = ?1").bind(id).run();
@@ -250,7 +250,7 @@ async function handleApi(request, env) {
             .bind(emailTrim, id)
             .first();
           if (other) {
-            return json({ error: "该邮箱已被其他记录使用" }, 409, c);
+            return json({ error: "此電郵已被其他紀錄使用" }, 409, c);
           }
           await env.DB.prepare(
             `UPDATE registrations
@@ -271,7 +271,7 @@ async function handleApi(request, env) {
 
       return json({ error: "Not Found" }, 404, c);
   } catch (err) {
-    return json({ error: err && err.message ? err.message : "服务器错误" }, 500, c);
+    return json({ error: err && err.message ? err.message : "伺服器錯誤" }, 500, c);
   }
 }
 

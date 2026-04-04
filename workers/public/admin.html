@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-HK">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>会员登记后台</title>
+  <title>會員登記後台</title>
   <style>
     body { margin: 0; font-family: Arial, sans-serif; background: #f4f6f8; color: #222; }
     .wrap { max-width: 1200px; margin: 24px auto; padding: 0 16px; }
@@ -53,21 +53,21 @@
 <body>
   <div class="wrap">
     <div class="title-row">
-      <h1 id="pageHeading">会员登记后台</h1>
+      <h1 id="pageHeading">會員登記後台</h1>
       <div class="lang-group">
-        <button type="button" class="lang-btn" id="langZh" aria-pressed="true">中文</button>
+        <button type="button" class="lang-btn" id="langZh" aria-pressed="true">繁中</button>
         <button type="button" class="lang-btn" id="langEn" aria-pressed="false">English</button>
       </div>
     </div>
 
     <div id="loginBox" class="box">
-      <h2 id="loginTitle">管理员登录</h2>
+      <h2 id="loginTitle">管理員登入</h2>
       <div class="row">
         <input id="username" type="text" />
         <input id="password" type="password" />
       </div>
       <div style="margin-top:10px;">
-        <button id="loginBtn" type="button">登录</button>
+        <button id="loginBtn" type="button">登入</button>
       </div>
       <div id="loginMsg" class="msg"></div>
     </div>
@@ -75,9 +75,9 @@
     <div id="adminBox" class="box hidden">
       <div class="toolbar">
         <input id="searchInput" type="text" />
-        <button type="button" id="exportCsvBtn">导出 CSV</button>
-        <button type="button" id="refreshBtn">刷新</button>
-        <button type="button" id="logoutBtn">退出登录</button>
+        <button type="button" id="exportCsvBtn">匯出 CSV</button>
+        <button type="button" id="refreshBtn">重新整理</button>
+        <button type="button" id="logoutBtn">登出</button>
       </div>
       <div style="overflow:auto;">
         <table>
@@ -85,11 +85,11 @@
             <tr>
               <th id="thId">ID</th>
               <th id="thName">姓名</th>
-              <th id="thEmail">邮箱</th>
-              <th id="thCountry">国家/地区</th>
-              <th id="thPhone">电话</th>
-              <th id="thVip">VIP号码</th>
-              <th id="thCreated">时间戳</th>
+              <th id="thEmail">電郵</th>
+              <th id="thCountry">國家／地區</th>
+              <th id="thPhone">電話</th>
+              <th id="thVip">VIP 號碼</th>
+              <th id="thCreated">時間戳</th>
               <th id="thActions">操作</th>
             </tr>
           </thead>
@@ -102,23 +102,23 @@
 
   <div id="editBackdrop" class="modal-backdrop hidden" aria-hidden="true">
     <div class="modal" role="dialog" aria-labelledby="editTitle">
-      <h3 id="editTitle">编辑记录</h3>
+      <h3 id="editTitle">編輯紀錄</h3>
       <input type="hidden" id="editId" />
       <label for="editName" id="labEditName">姓名</label>
       <input id="editName" type="text" maxlength="80" />
-      <label for="editEmail" id="labEditEmail">邮箱</label>
+      <label for="editEmail" id="labEditEmail">電郵</label>
       <input id="editEmail" type="email" maxlength="120" />
-      <label for="editCountry" id="labEditCountry">国家/地区</label>
+      <label for="editCountry" id="labEditCountry">國家／地區</label>
       <input id="editCountry" type="text" maxlength="80" />
-      <label for="editPhoneCode" id="labEditPhoneCode">电话区号</label>
+      <label for="editPhoneCode" id="labEditPhoneCode">電話區號</label>
       <input id="editPhoneCode" type="text" maxlength="20" />
-      <label for="editPhoneNum" id="labEditPhoneNum">电话号码</label>
+      <label for="editPhoneNum" id="labEditPhoneNum">電話號碼</label>
       <input id="editPhoneNum" type="text" maxlength="30" />
-      <label for="editVip" id="labEditVip">VIP号码（可空）</label>
+      <label for="editVip" id="labEditVip">VIP 號碼（可留空）</label>
       <input id="editVip" type="text" maxlength="50" />
       <div class="modal-actions">
         <button type="button" class="ghost" id="editCancel">取消</button>
-        <button type="button" id="editSave">保存</button>
+        <button type="button" id="editSave">儲存</button>
       </div>
     </div>
   </div>
@@ -129,52 +129,52 @@
 
       var STR = {
         zh: {
-          pageTitle: "会员登记后台",
-          pageHeading: "会员登记后台",
-          loginTitle: "管理员登录",
-          phUsername: "账号",
-          phPassword: "密码",
-          loginBtn: "登录",
-          searchPlaceholder: "搜索姓名/邮箱/电话/VIP",
-          exportCsv: "导出 CSV",
-          refresh: "刷新",
-          logout: "退出登录",
+          pageTitle: "會員登記後台",
+          pageHeading: "會員登記後台",
+          loginTitle: "管理員登入",
+          phUsername: "帳號",
+          phPassword: "密碼",
+          loginBtn: "登入",
+          searchPlaceholder: "搜尋姓名／電郵／電話／VIP",
+          exportCsv: "匯出 CSV",
+          refresh: "重新整理",
+          logout: "登出",
           thId: "ID",
           thName: "姓名",
-          thEmail: "邮箱",
-          thCountry: "国家/地区",
-          thPhone: "电话",
-          thVip: "VIP号码",
-          thCreated: "时间戳",
+          thEmail: "電郵",
+          thCountry: "國家／地區",
+          thPhone: "電話",
+          thVip: "VIP 號碼",
+          thCreated: "時間戳",
           thActions: "操作",
-          editTitle: "编辑记录",
+          editTitle: "編輯紀錄",
           labEditName: "姓名",
-          labEditEmail: "邮箱",
-          labEditCountry: "国家/地区",
-          labEditPhoneCode: "电话区号",
-          labEditPhoneCodePh: "如 +86",
-          labEditPhoneNum: "电话号码",
-          labEditVip: "VIP号码（可空）",
+          labEditEmail: "電郵",
+          labEditCountry: "國家／地區",
+          labEditPhoneCode: "電話區號",
+          labEditPhoneCodePh: "例如 +86",
+          labEditPhoneNum: "電話號碼",
+          labEditVip: "VIP 號碼（可留空）",
           cancel: "取消",
-          save: "保存",
-          edit: "编辑",
-          delete: "删除",
-          confirmDelete: "确认删除 ID {id} ?",
-          deleteOk: "删除成功",
-          deleteFail: "删除失败",
-          loadFail: "加载失败",
-          loginNeed: "请输入账号和密码。",
-          loginOk: "登录成功",
-          loginFail: "登录失败",
-          exportEmpty: "当前没有可导出的数据。",
-          exportDone: "已导出 {n} 条记录。",
-          logoutOk: "已退出登录",
-          saveFields: "请填写完整必填字段。",
-          saveOk: "保存成功",
-          saveFail: "保存失败",
+          save: "儲存",
+          edit: "編輯",
+          delete: "刪除",
+          confirmDelete: "確認刪除 ID {id}？",
+          deleteOk: "刪除成功",
+          deleteFail: "刪除失敗",
+          loadFail: "載入失敗",
+          loginNeed: "請輸入帳號與密碼。",
+          loginOk: "登入成功",
+          loginFail: "登入失敗",
+          exportEmpty: "目前沒有可匯出的資料。",
+          exportDone: "已匯出 {n} 筆紀錄。",
+          logoutOk: "已登出",
+          saveFields: "請填寫完整必填欄位。",
+          saveOk: "儲存成功",
+          saveFail: "儲存失敗",
           errEmpty:
-            "服务器返回空内容（HTTP {status}）。请求地址：{url}。若状态为 404：说明请求没有打到本仓库的 Worker（常见原因：wrangler.toml 里 name 与控制台 Worker 名不一致，或部署到了别的子域）。请用浏览器打开「同一域名」下的 /api/health ，应看到 JSON；若也为 404，请在本机进入 workers 目录执行 npm run deploy 后重试（配置在仓库根 wrangler.toml）。",
-          errBadJson: "服务器返回非 JSON（HTTP {status}）：{snippet}"
+            "伺服器回傳空內容（HTTP {status}）。請求位址：{url}。若為 404：表示請求未到本專案的 Worker（常見原因：wrangler.toml 的 name 與控制台 Worker 名稱不一致，或部署到其他子網域）。請在瀏覽器開啟「同一網域」下的 /api/health，應見 JSON；若仍為 404，請在本機進入 workers 目錄執行 npm run deploy（設定在倉庫根 wrangler.toml）。",
+          errBadJson: "伺服器回傳非 JSON（HTTP {status}）：{snippet}"
         },
         en: {
           pageTitle: "Member admin",
@@ -227,6 +227,18 @@
       };
 
       var SERVER_ERR_ZH_TO_EN = {
+        "此電郵已被其他紀錄使用": "This email is already used by another record.",
+        "未登入": "Not signed in.",
+        "未授權": "Unauthorized.",
+        "帳號或密碼錯誤": "Invalid username or password.",
+        "帳號或密碼不可為空": "Username and password are required.",
+        "無效 ID": "Invalid ID.",
+        "缺少欄位：name": "Missing field: name",
+        "缺少欄位：email": "Missing field: email",
+        "缺少欄位：country_region": "Missing field: country/region",
+        "缺少欄位：phone_country_code": "Missing field: phone country code",
+        "缺少欄位：phone_number": "Missing field: phone number",
+        "電郵格式不正確": "Invalid email format.",
         "该邮箱已被其他记录使用": "This email is already used by another record.",
         "未登录": "Not signed in.",
         "未授权": "Unauthorized.",
@@ -306,7 +318,7 @@
       function setLang(next) {
         lang = next === "en" ? "en" : "zh";
         localStorage.setItem(STORAGE_KEY, lang);
-        document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+        document.documentElement.lang = lang === "zh" ? "zh-HK" : "en";
         document.getElementById("langZh").classList.toggle("active", lang === "zh");
         document.getElementById("langEn").classList.toggle("active", lang === "en");
         document.getElementById("langZh").setAttribute("aria-pressed", lang === "zh" ? "true" : "false");

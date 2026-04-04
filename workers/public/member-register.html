@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-HK">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>会员登记</title>
+  <title>會員登記</title>
   <style>
     body { margin: 0; font-family: Arial, sans-serif; background: #f7f7f7; color: #222; }
     .wrap { max-width: 1100px; margin: 32px auto; padding: 0 16px; }
@@ -37,43 +37,43 @@
 <body>
   <div class="wrap">
     <div class="title-row">
-      <h1 id="pageHeading">会员登记</h1>
+      <h1 id="pageHeading">會員登記</h1>
       <div class="topbar">
         <div class="lang-group">
-          <button type="button" class="lang-btn" id="langZh" aria-pressed="true">中文</button>
+          <button type="button" class="lang-btn" id="langZh" aria-pressed="true">繁中</button>
           <button type="button" class="lang-btn" id="langEn" aria-pressed="false">English</button>
         </div>
       </div>
     </div>
     <div class="panel">
       <div class="card">
-        <h2 id="scanTitle">扫码登记</h2>
-        <p id="scanHint">请客户使用手机扫描二维码进入登记页。</p>
+        <h2 id="scanTitle">掃碼登記</h2>
+        <p id="scanHint">請客人使用手機掃描二維碼進入登記頁。</p>
         <img id="qrCodeImage" class="qr" src="" alt="" />
-        <div class="line"><span id="linkLabel">链接：</span><a id="pageLink" href="#">-</a></div>
+        <div class="line"><span id="linkLabel">連結：</span><a id="pageLink" href="#">-</a></div>
       </div>
       <div class="card">
-        <h2 id="formTitle">登记资料</h2>
+        <h2 id="formTitle">登記資料</h2>
         <form id="registerForm">
           <label for="name" id="labelName">姓名</label>
           <input id="name" name="name" type="text" maxlength="80" required />
 
-          <label for="email" id="labelEmail">邮箱</label>
+          <label for="email" id="labelEmail">電郵</label>
           <input id="email" name="email" type="email" maxlength="120" required />
 
-          <label for="countryRegion" id="labelCountry">国家/地区</label>
+          <label for="countryRegion" id="labelCountry">國家／地區</label>
           <select id="countryRegion" name="country_region" required></select>
 
-          <label id="labelPhone">电话</label>
+          <label id="labelPhone">電話</label>
           <div class="row">
             <select id="phoneCountryCode" name="phone_country_code" required></select>
             <input id="phoneNumber" name="phone_number" type="tel" maxlength="30" required />
           </div>
 
-          <label for="vipNumber" id="labelVip">VIP号码（可选）</label>
+          <label for="vipNumber" id="labelVip">VIP 號碼（可選）</label>
           <input id="vipNumber" name="vip_number" type="text" maxlength="50" />
 
-          <button type="submit" id="submitBtn">提交登记</button>
+          <button type="submit" id="submitBtn">提交登記</button>
           <div id="formMsg" class="msg" aria-live="polite"></div>
         </form>
       </div>
@@ -86,14 +86,14 @@
       var API_BASE = window.MEMBER_API_BASE || "";
 
       var COUNTRY_OPTIONS = [
-        { v: "中国内地", zh: "中国内地", en: "Mainland China" },
-        { v: "中国香港", zh: "中国香港", en: "Hong Kong, China" },
-        { v: "中国澳门", zh: "中国澳门", en: "Macao, China" },
-        { v: "中国台湾", zh: "中国台湾", en: "Taiwan, China" },
+        { v: "中國內地", zh: "中國內地", en: "Mainland China" },
+        { v: "中國香港", zh: "中國香港", en: "Hong Kong, China" },
+        { v: "中國澳門", zh: "中國澳門", en: "Macao, China" },
+        { v: "中國台灣", zh: "中國台灣", en: "Taiwan, China" },
         { v: "新加坡", zh: "新加坡", en: "Singapore" },
-        { v: "马来西亚", zh: "马来西亚", en: "Malaysia" },
-        { v: "美国", zh: "美国", en: "United States" },
-        { v: "英国", zh: "英国", en: "United Kingdom" },
+        { v: "馬來西亞", zh: "馬來西亞", en: "Malaysia" },
+        { v: "美國", zh: "美國", en: "United States" },
+        { v: "英國", zh: "英國", en: "United Kingdom" },
         { v: "其他", zh: "其他", en: "Other" }
       ];
 
@@ -101,29 +101,29 @@
 
       var STR = {
         zh: {
-          pageTitle: "会员登记",
-          pageHeading: "会员登记",
-          scanTitle: "扫码登记",
-          scanHint: "请客户使用手机扫描二维码进入登记页。",
-          qrAlt: "登记二维码",
-          linkLabel: "链接：",
-          formTitle: "登记资料",
+          pageTitle: "會員登記",
+          pageHeading: "會員登記",
+          scanTitle: "掃碼登記",
+          scanHint: "請客人使用手機掃描二維碼進入登記頁。",
+          qrAlt: "登記二維碼",
+          linkLabel: "連結：",
+          formTitle: "登記資料",
           labelName: "姓名",
-          labelEmail: "邮箱",
-          labelCountry: "国家/地区",
-          labelPhone: "电话",
-          labelVip: "VIP号码（可选）",
-          submitBtn: "提交登记",
-          countryPlaceholder: "请选择",
-          phoneCodePlaceholder: "区号",
-          phonePlaceholder: "电话号码",
-          msgRequired: "请填写完整必填信息。",
-          msgEmailInvalid: "邮箱格式不正确。",
-          msgSuccess: "提交成功，感谢登记。",
-          msgSubmitFail: "提交失败，请稍后再试。",
-          msgHttpFail: "提交失败（HTTP {status}）。后端可能未部署或接口地址未接通。",
-          errDupEmail: "该邮箱已登记过",
-          errCapacity: "数据库容量不足，请稍后再试或联系管理员"
+          labelEmail: "電郵",
+          labelCountry: "國家／地區",
+          labelPhone: "電話",
+          labelVip: "VIP 號碼（可選）",
+          submitBtn: "提交登記",
+          countryPlaceholder: "請選擇",
+          phoneCodePlaceholder: "區號",
+          phonePlaceholder: "電話號碼",
+          msgRequired: "請填寫完整必填資料。",
+          msgEmailInvalid: "電郵格式不正確。",
+          msgSuccess: "提交成功，感謝登記。",
+          msgSubmitFail: "提交失敗，請稍後再試。",
+          msgHttpFail: "提交失敗（HTTP {status}）。後端可能未部署或介面位址未接通。",
+          errDupEmail: "此電郵已登記過",
+          errCapacity: "資料庫容量不足，請稍後再試或聯絡管理員"
         },
         en: {
           pageTitle: "Member registration",
@@ -153,6 +153,14 @@
       };
 
       var SERVER_ERR_ZH_TO_EN = {
+        "此電郵已登記過": "This email is already registered.",
+        "資料庫容量不足，請稍後再試或聯絡管理員": "Database capacity exceeded. Please try again later or contact the administrator.",
+        "缺少欄位：name": "Missing field: name",
+        "缺少欄位：email": "Missing field: email",
+        "缺少欄位：country_region": "Missing field: country/region",
+        "缺少欄位：phone_country_code": "Missing field: phone country code",
+        "缺少欄位：phone_number": "Missing field: phone number",
+        "電郵格式不正確": "Invalid email format.",
         "该邮箱已登记过": "This email is already registered.",
         "数据库容量不足，请稍后再试或联系管理员": "Database capacity exceeded. Please try again later or contact the administrator.",
         "缺少字段: name": "Missing field: name",
@@ -228,7 +236,7 @@
       }
 
       function applyI18n() {
-        document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+        document.documentElement.lang = lang === "zh" ? "zh-HK" : "en";
         document.title = t("pageTitle");
         document.getElementById("pageHeading").textContent = t("pageHeading");
         document.getElementById("scanTitle").textContent = t("scanTitle");
